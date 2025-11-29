@@ -30,6 +30,7 @@ import PaymentPage from "./Pages/PaymentPage";
 import SuccessPage from "./Pages/SuccessPage";
 import BuyTicketsPage from "./Pages/BuyTicketsPage";
 import MyBookingsPage from "./Pages/MyBookingsPage";
+import SellerBookings from "./AuthSeller/SellerBookings";
 
 function App() {
   return (
@@ -62,6 +63,7 @@ function App() {
           {/* SELLER AUTH */}
           <Route path="/seller/signin" element={<SellerLogin />} />
           <Route path="/seller/onboard" element={<SellerOnboard />} />
+          <Route path="/seller/bookings" element={<SellerBookings />} />
 
           {/* SELLER DASHBOARD */}
           <Route path="/seller/dashboard" element={<SellerDashboard />} />

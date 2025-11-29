@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Home, Building2, Monitor, Calendar } from "lucide-react";
+import { Film } from "lucide-react";
 
 export default function SellerSidebar() {
   const navigate = useNavigate();
@@ -11,7 +12,6 @@ export default function SellerSidebar() {
 
   return (
     <aside className="w-64 bg-white border-r border-gray-300 hidden md:flex flex-col">
-
       {/* LOGO */}
       <div className="px-6 py-3 border-b border-gray-300 ">
         <img
@@ -24,7 +24,6 @@ export default function SellerSidebar() {
       {/* MENU */}
       <nav className="flex-1 px-4 py-6 text-sm text-gray-700">
         <ul className="space-y-3">
-
           <li
             onClick={() => navigate("/seller/dashboard")}
             className={`cursor-pointer flex items-center gap-3 ${
@@ -68,7 +67,17 @@ export default function SellerSidebar() {
           >
             <Calendar size={18} /> Shows
           </li>
-
+          <li
+            onClick={() => navigate("/seller/bookings")}
+            className={`cursor-pointer flex items-center gap-3 ${
+              isActive("/seller/bookings")
+                ? "text-[#f84464] font-semibold"
+                : "hover:text-[#f84464]"
+            }`}
+          >
+            <Film size={18} />
+            Bookings
+          </li>
         </ul>
       </nav>
 
@@ -81,7 +90,6 @@ export default function SellerSidebar() {
           + Add Theatre
         </button>
       </div>
-
     </aside>
   );
 }

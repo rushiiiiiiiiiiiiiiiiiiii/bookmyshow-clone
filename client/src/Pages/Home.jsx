@@ -15,8 +15,7 @@ const sampleMovies = [
     title: "The Great Escape",
     sub: "English · 2h 24m",
     rating: "9.1/10",
-    poster:
-      "https://images.unsplash.com/photo-1517604931442-3d40e1e9a3c8?q=80&w=400&auto=format&fit=crop",
+    poster: "https://m.media-amazon.com/images/I/81cy1dRCcyL.jpg",
   },
   {
     id: 2,
@@ -24,7 +23,7 @@ const sampleMovies = [
     sub: "Hindi · 2h 10m",
     rating: "8.8/10",
     poster:
-      "https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?q=80&w=400&auto=format&fit=crop",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtUq0qAPyNUHsoD_ImNGMUyQ_hHHG3-KGtJg&s",
   },
   {
     id: 3,
@@ -32,7 +31,7 @@ const sampleMovies = [
     sub: "English · 2h 40m",
     rating: "9.4/10",
     poster:
-      "https://images.unsplash.com/photo-1533105074853-3f6a4c0b8f28?q=80&w=400&auto=format&fit=crop",
+      "https://m.media-amazon.com/images/I/81mZDyQhLBL.jpg",
   },
   {
     id: 4,
@@ -40,7 +39,7 @@ const sampleMovies = [
     sub: "Korean · 1h 50m",
     rating: "8.2/10",
     poster:
-      "https://images.unsplash.com/photo-1627882200508-fa80c326005b?q=80&w=400&auto=format&fit=crop",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuU604OLMlJX34WsCMzaL3xvKDelZ0qa5yAA&s",
   },
   {
     id: 5,
@@ -48,9 +47,10 @@ const sampleMovies = [
     sub: "English · 2h 05m",
     rating: "7.9/10",
     poster:
-      "https://images.unsplash.com/photo-1581093582520-22d56a2f7c05?q=80&w=400&auto=format&fit=crop",
+      "https://vareverta.wordpress.com/wp-content/uploads/2014/01/future-shock-movie-poster-1993-1020394176.jpg?w=144",
   },
 ];
+
 function shuffleArray(arr) {
   return [...arr].sort(() => 0.5 - Math.random());
 }
@@ -243,7 +243,7 @@ export default function Home() {
       <Hero city={city} carouselMovies={carouselMovies} />
 
       {/* RECOMMENDED MOVIES */}
-      <SectionTitle title="Recommended Movies" />
+      <SectionTitle title="Newly Launched Movies" />
       <div className="max-w-7xl mx-auto px-4 flex gap-6 overflow-x-auto pb-6">
         {carouselMovies.map((m, i) => (
           <MovieCard key={i} m={m} />

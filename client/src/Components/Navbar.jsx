@@ -210,7 +210,7 @@ function UserNavbar() {
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           {/* LOGO + SEARCH */}
           <div className="flex items-center gap-6 w-3/4">
-            <img
+            <img onClick={()=> navigate('/')}
               src="https://upload.wikimedia.org/wikipedia/commons/7/75/Bookmyshow-logoid.png"
               className="w-16 h-8 md:w-28 md:h-10"
               alt="logo"

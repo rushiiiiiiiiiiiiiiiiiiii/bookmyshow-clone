@@ -31,7 +31,6 @@ export default function MyBookingsPage() {
       <Navbar />
 
       <div className="max-w-6xl mx-auto p-6">
-
         <h1 className="text-2xl font-bold mb-6">My Bookings</h1>
 
         {bookings.length === 0 && (
@@ -45,7 +44,6 @@ export default function MyBookingsPage() {
             <BookingCard key={i} booking={b} />
           ))}
         </div>
-
       </div>
     </div>
   );
@@ -58,9 +56,7 @@ export default function MyBookingsPage() {
 function BookingCard({ booking }) {
   return (
     <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden">
-
       <div className="flex">
-
         {/* POSTER */}
         <img
           src={booking.poster}
@@ -70,31 +66,26 @@ function BookingCard({ booking }) {
 
         {/* DETAILS */}
         <div className="flex-1 p-4">
-
           {/* TITLE */}
           <div className="flex justify-between items-start">
-
             <div>
               <h2 className="font-bold text-lg">{booking.movie}</h2>
-              <p className="text-xs text-gray-500">
-                Booking ID: {booking._id}
-              </p>
+              <p className="text-xs text-gray-500">Booking ID: {booking._id}</p>
             </div>
 
             <StatusBadge status={booking.status} />
-
           </div>
 
           {/* TIME & LOCATION */}
           <div className="mt-3 text-sm text-gray-600 space-y-1">
             <div className="flex items-center gap-2">
               <Calendar size={14} />
-              {booking.date} · {booking.time}
+              {new Date(booking.date).toDateString()} · {booking.time}
             </div>
 
             <div className="flex items-center gap-2">
               <MapPin size={14} />
-              {booking.theatre} · {booking.screen}
+              {booking.theatre?.name} · {booking.screen?.name}
             </div>
           </div>
 
@@ -107,9 +98,7 @@ function BookingCard({ booking }) {
           <div className="mt-2 font-bold text-sm">
             Amount Paid ₹ {booking.amount}
           </div>
-
         </div>
-
       </div>
 
       {/* FOOTER ACTION */}
@@ -118,7 +107,6 @@ function BookingCard({ booking }) {
           View Ticket
         </button>
       </div>
-
     </div>
   );
 }
