@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../Components/Navbar";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+
 // --- Colors ---
 const BMS_GREEN = "#1FA85D";
 const BMS_BTN = "bg-[#f84464] hover:bg-[#e43a57]";
@@ -46,32 +46,29 @@ export default function SeatPage() {
   useEffect(() => {
     async function load() {
       try {
-        // ✅ MOVIE DETAILS
+        // ✅ GET SHOW
         const showRes = await axios.get(
           `https://bookmyshow-backend-mzd2.onrender.com/api/shows/${id}`
         );
 
-        if (showRes.data.ok) {
-          setShow(showRes.data.show);
-        }
+        if (showRes.data.ok) setShow(showRes.data.show);
 
-        // ✅ SEAT DATA
+        // ✅ GET SEATS
         const seatRes = await axios.get(
           `https://bookmyshow-backend-mzd2.onrender.com/api/user/seats/${id}`
         );
 
         if (seatRes.data.ok) {
           const seatNumbers = (seatRes.data.booked || []).map(
-            (seat) => seat.seatNumber
+            (s) => s.seatNumber
           );
-
           setBooked(seatNumbers);
           setScreen(seatRes.data.screen);
         }
       } catch (err) {
         console.error("SEAT PAGE ERROR:", err);
 
-        // FALLBACK DEMO DATA
+        // FALLBACK DEMO
         setBooked(["A4", "A5", "C6"]);
         setScreen({ rows: 8, seatsPerRow: 12, screenType: "IMAX" });
         setShow({
@@ -95,7 +92,7 @@ export default function SeatPage() {
   }, [id]);
 
   // -------------------------
-  // SEAT TOGGLE (LIMIT BY DB)
+  // TOGGLE SEAT
   // -------------------------
   function toggleSeat(seat) {
     if (booked.includes(seat)) return;
@@ -131,7 +128,6 @@ export default function SeatPage() {
   const rows = alphabet.slice(0, screen.rows);
   const seatsPerRow = screen.seatsPerRow;
   const total = selected.length * SEAT_PRICE;
-
   const limit = show.maxSeatsPerBooking || 1;
 
   const leftSeats = AISLE_AFTER_SEAT;
@@ -141,67 +137,65 @@ export default function SeatPage() {
     <div className="min-h-screen bg-[#f5f5f5]">
       <Navbar />
 
-      {/* ===================
-           🎬 MOVIE HEADER
-      =================== */}
+      {/* 🎬 MOVIE HEADER */}
       <div className="bg-white shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 py-2 flex items-center gap-4">
-          {/* POSTER */}
+        <div className="max-w-6xl mx-auto px-3 py-2 flex flex-wrap md:flex-nowrap items-center gap-3">
+
           <img
             src={show.poster}
             alt={show.movie}
-            className="w-14 h-20 object-cover rounded-md"
+            className="w-12 md:w-14 h-16 md:h-20 object-cover rounded-md"
           />
 
-          {/* DETAILS */}
-          <div className="flex-1">
-            <h1 className="text-base font-bold truncate">{show.movie}</h1>
+          <div className="flex-1 min-w-[150px]">
+            <h1 className="text-sm md:text-base font-bold truncate">
+              {show.movie}
+            </h1>
 
-            <p className="text-xs text-gray-600">
+            <p className="text-[11px] text-gray-600">
               {show.language} · {show.format}
             </p>
 
-            <p className="text-xs text-gray-600">
+            <p className="text-[11px] text-gray-600">
               {show.theatreId?.name} · {show.screenId?.name}
             </p>
 
-            <p className="text-xs font-medium text-gray-800">
+            <p className="text-[11px] font-medium text-gray-800">
               {new Date(show.date).toDateString()} · {show.time}
             </p>
           </div>
 
-          {/* LIMIT BADGE */}
-          <div className="text-[11px] text-red-600 font-semibold whitespace-nowrap">
+          <div className="text-[11px] text-red-600 font-semibold">
             MAX {limit}
           </div>
         </div>
       </div>
 
-      {/* ===================
-              SCREEN
-      =================== */}
-      <div className="max-w-5xl mx-auto px-6 pt-8 pb-28">
-        <div className="flex justify-center mb-10">
+      {/* SCREEN */}
+      <div className="max-w-5xl mx-auto px-2 sm:px-4 pt-6 pb-24 sm:pb-28">
+        <div className="flex justify-center mb-6">
           <div className="relative w-full max-w-xs">
-            <div className="h-3 bg-black rounded-t-full opacity-70" />
-            <div className="h-3 w-[80%] mx-auto bg-black rounded-t-full absolute -top-1 left-1/2 transform -translate-x-1/2 opacity-90" />
-            <p className="text-center mt-3 text-xs tracking-widest text-gray-600">
+            <div className="h-2 bg-black rounded-t-full opacity-70" />
+            <div className="h-2 w-[80%] mx-auto bg-black rounded-t-full absolute -top-1 left-1/2 -translate-x-1/2 opacity-90" />
+            <p className="text-center mt-2 text-[10px] tracking-widest text-gray-600">
               {screen.screenType || "SCREEN"} THIS WAY
             </p>
           </div>
         </div>
 
-        {/* ===================
-              SEATS
-        =================== */}
-        <div className="flex flex-col items-center">
+        {/* SEATS */}
+        <div className="flex flex-col items-center overflow-x-auto">
           {rows.split("").map((r) => (
-            <div key={r} className="flex items-center mb-2">
-              <span className="w-6 text-right mr-3 text-sm text-gray-500">
+            <div
+              key={r}
+              className="flex items-center mb-1 whitespace-nowrap"
+            >
+              <span className="w-4 text-right mr-2 text-[10px] text-gray-500">
                 {r}
               </span>
 
-              <div className="flex items-center">
+              <div className="flex">
+
                 {[...Array(leftSeats)].map((_, i) => {
                   const seat = `${r}${i + 1}`;
                   return (
@@ -215,7 +209,7 @@ export default function SeatPage() {
                   );
                 })}
 
-                <div className="w-10" />
+                <div className="w-4 xs:w-6 sm:w-8" />
 
                 {[...Array(rightSeats)].map((_, i) => {
                   const seat = `${r}${leftSeats + i + 1}`;
@@ -231,33 +225,36 @@ export default function SeatPage() {
                 })}
               </div>
 
-              <span className="w-6 ml-3 text-sm text-gray-500">{r}</span>
+              <span className="w-4 ml-2 text-[10px] text-gray-500">
+                {r}
+              </span>
             </div>
           ))}
         </div>
 
         {/* LEGEND */}
-        <div className="flex justify-center gap-8 mt-8 border-t pt-5">
+        <div className="flex flex-wrap justify-center gap-4 mt-6 border-t pt-4">
           <Legend color="bg-gray-400" label="Sold" />
           <Legend color="bg-white" border label="Available" />
           <Legend label="Selected" style={{ backgroundColor: BMS_GREEN }} />
         </div>
       </div>
 
-      {/* ===================
-           PAY BAR
-      =================== */}
+      {/* 💳 PAY BAR */}
       {selected.length > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg px-6 py-4 flex justify-between items-center z-50">
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg px-4 sm:px-6 py-3 flex justify-between items-center z-50">
+
           <div>
-            <div className="text-lg font-bold">
+            <div className="text-sm sm:text-lg font-bold">
               {selected.length} / {limit} Ticket(s)
             </div>
-            <div className="text-xs text-gray-500">{selected.join(", ")}</div>
+            <div className="text-[10px] sm:text-xs text-gray-500 truncate max-w-[180px]">
+              {selected.join(", ")}
+            </div>
           </div>
 
           <button
-            className={`${BMS_BTN} text-white px-8 py-3 rounded-lg font-bold`}
+            className={`${BMS_BTN} text-white px-5 sm:px-8 py-2 sm:py-3 rounded-lg font-bold text-sm`}
             onClick={() =>
               navigate("/pay", {
                 state: {
@@ -284,7 +281,7 @@ function Seat({ id, booked, selected, toggleSeat }) {
   const isSelected = selected.includes(id);
 
   let style =
-    "w-7 h-6 mx-1 mb-1 rounded-t-md transition-all duration-150 flex items-center justify-center text-[9px] font-semibold select-none";
+    "w-[18px] h-[16px] sm:w-7 sm:h-6 mx-[2px] mb-[2px] rounded-t-md transition-all duration-150 flex items-center justify-center text-[7px] sm:text-[9px] font-semibold select-none";
 
   if (isBooked) {
     style += " bg-gray-500 cursor-not-allowed text-white";
