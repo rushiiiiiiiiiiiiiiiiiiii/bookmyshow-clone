@@ -26,6 +26,24 @@ app.get("/", (req, res) => {
 app.use("/api", require("./Routes/theatreRoutes"));
 app.use("/auth", Authrouter);
 app.use("/api/seller", require("./Routes/SellerRoutes"));
+
+
+app.get("/test-mail", async (req, res) => {
+  try {
+    await transporter.sendMail({
+      from: process.env.SMTP_USER,
+      to: "rushikesharote14@gmail.com",
+      subject: "OTP Test",
+      text: "Brevo SMTP Working ✅"
+    });
+
+    res.send("Email Sent ✅");
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(err);
+  }
+});
+
 app.listen(process.env.PORT, () => {
   console.log(`Server Started on PORT ${process.env.PORT}`);
 });
