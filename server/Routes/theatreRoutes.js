@@ -8,6 +8,7 @@ const {
   getTheatreById,
   updateTheatre,
   deleteTheatre,
+  getPublicTheatres,
 } = require("../Controllers/TheatreController");
 
 // 📽 SCREENS
@@ -31,8 +32,12 @@ const {
   getShowsByMovie,
   getShowById,
 } = require("../Controllers/showController");
-const { createBooking } = require("../Controllers/bookingController");
-const authMiddleware = require('../Middlewears/authMiddleware')
+const {
+  createBooking,
+  getMyBookings,
+  getBooking,
+} = require("../Controllers/bookingController");
+const authMiddleware = require("../Middlewears/authMiddleware");
 /* ============================
    ✅ THEATRE ROUTES
 ============================ */
@@ -41,6 +46,8 @@ router.get("/seller/theatres", getTheatres);
 router.get("/seller/theatre/:id", getTheatreById);
 router.put("/seller/theatre/:id", updateTheatre);
 router.delete("/seller/theatre/:id", deleteTheatre);
+// ✅ PUBLIC USER ROUTE
+router.get("/user/theatres", getPublicTheatres);
 
 /* ============================
    ✅ SCREEN ROUTES
@@ -64,12 +71,10 @@ router.get("/user/seats/:id", getSeatLayout);
 router.get("/shows/movie", getShowsByMovie);
 router.get("/shows/:id", getShowById);
 
-
-
 //BOOKINING ROUTES
 
 router.post("/booking", authMiddleware, createBooking);
-
-
+router.get("/my-bookings", authMiddleware, getMyBookings);
+router.get("/booking/:id", authMiddleware, getBooking);
 
 module.exports = router;

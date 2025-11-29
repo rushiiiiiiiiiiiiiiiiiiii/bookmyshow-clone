@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Clock, Globe, BadgeCheck } from "lucide-react";
+import { Clock, Globe, BadgeCheck, Star } from "lucide-react";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
-import { useNavigate } from "react-router-dom";
 
 const BMS_BTN = "bg-[#f84464] hover:bg-[#e43a57] active:bg-[#d6334f]";
 
@@ -12,42 +11,28 @@ export default function MoviePage() {
   const { name } = useParams();
   const movieName = decodeURIComponent(name);
   const navigate = useNavigate();
-  const [shows, setShows] = useState([]);
+
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
   useEffect(() => {
     async function load() {
-      try {
-        setLoading(true);
-        setError("");
+      const res = await axios.get(
+        `http://localhost:8000/api/shows/movie?movie=${encodeURIComponent(
+          movieName
+        )}`
+      );
 
-        // ✅ CORRECT API ROUTE
-        const res = await axios.get(
-          `http://localhost:8000/api/shows/movie?movie=${encodeURIComponent(
-            movieName
-          )}`
-        );
-
-        if (res.data.ok && res.data.shows.length > 0) {
-          setShows(res.data.shows);
-          setMovie(res.data.shows[0]);
-        } else {
-          setMovie(null);
-        }
-      } catch (err) {
-        console.error("MOVIE PAGE ERROR:", err);
-        setError("Failed to load movie details");
-      } finally {
-        setLoading(false);
+      if (res.data.ok && res.data.shows.length > 0) {
+        setMovie(res.data.shows[0]);
       }
+
+      setLoading(false);
     }
 
     load();
   }, [movieName]);
 
-  // ✅ LOADING
   if (loading) {
     return (
       <div className="p-10 text-center text-lg text-gray-600">
@@ -56,7 +41,6 @@ export default function MoviePage() {
     );
   }
 
-  // ✅ NOT FOUND
   if (!movie) {
     return (
       <div className="p-10 text-center">
@@ -134,41 +118,88 @@ export default function MoviePage() {
         </div>
       </div>
 
-      {/* THEATRES */}
-      <div className="max-w-7xl mx-auto px-6 mt-8">
-        <h2 className="text-xl font-bold mb-4">
-          Theatres in {movie.theatreId?.city}
-        </h2>
+      {/* CAST & CREW */}
+      {/* <div className="max-w-7xl mx-auto px-6 mt-10">
+        <h2 className="text-xl font-bold mb-4">Cast & Crew</h2>
 
-        <div className="space-y-4">
-          {shows.map((s, i) => (
-            <div
-              key={i}
-              className="bg-white rounded-lg shadow p-4 flex justify-between items-center"
-            >
-              <div>
-                <h3 className="font-bold text-lg">{s.theatreId.name}</h3>
-                <p className="text-sm text-gray-500">
-                  Screen: {s.screenId.name} · {s.format}
-                </p>
-              </div>
+        <div className="flex gap-6 overflow-x-auto">
+          {[
+            {
+              name: "Millie Bobby Brown",
+              role: "Eleven",
+              img: "https://upload.wikimedia.org/wikipedia/commons/7/7f/Millie_Bobby_Brown_by_Gage_Skidmore_2.jpg",
+            },
+            {
+              name: "Finn Wolfhard",
+              role: "Mike",
+              img: "https://upload.wikimedia.org/wikipedia/commons/3/32/Finn_Wolfhard_by_Gage_Skidmore_2.jpg",
+            },
+            {
+              name: "Noah Schnapp",
+              role: "Will",
+              img: "https://upload.wikimedia.org/wikipedia/commons/5/5b/Noah_Schnapp_by_Gage_Skidmore.jpg",
+            },
+            {
+              name: "David Harbour",
+              role: "Hopper",
+              img: "https://upload.wikimedia.org/wikipedia/commons/f/f5/David_Harbour_by_Gage_Skidmore.jpg",
+            },
+          ].map((c, i) => (
+            <div key={i} className="w-36 text-center">
+              <img
+                src={c.img}
+                className="h-44 w-full object-cover rounded-lg shadow"
+                alt={c.name}
+              />
+              <h4 className="font-semibold mt-2">{c.name}</h4>
+              <p className="text-sm text-gray-500">{c.role}</p>
+            </div>
+          ))}
+        </div>
+      </div> */}
 
-              <div className="flex gap-4 items-center">
-                <div
-                  onClick={() => navigate(`/seats/${s._id}`)}
-                  className="border px-4 py-2 rounded text-green-600 font-semibold cursor-pointer hover:bg-green-50"
-                >
-                  {s.time}
+      {/* REVIEWS */}
+      <div className="max-w-7xl mx-auto px-6 mt-12 mb-10">
+        <h2 className="text-xl font-bold mb-4">Top Reviews</h2>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          {[
+            {
+              user: "Rahul Mehta",
+              rating: 5,
+              text: "Mind-blowing season! Every episode was intense.",
+            },
+            {
+              user: "Sneha Sharma",
+              rating: 4,
+              text: "Great story and acting. Worth watching in theatre!",
+            },
+            {
+              user: "Aman Verma",
+              rating: 4,
+              text: "Amazing visuals and music. Actors did a great job!",
+            },
+            {
+              user: "Neha Kulkarni",
+              rating: 5,
+              text: "Best season so far. Totally loved it!",
+            },
+          ].map((r, i) => (
+            <div key={i} className="bg-white p-4 rounded shadow">
+              <div className="flex justify-between mb-2">
+                <h4 className="font-semibold">{r.user}</h4>
+                <div className="flex">
+                  {[...Array(r.rating)].map((_, i) => (
+                    <Star key={i} size={14} className="text-yellow-400 fill-yellow-400" />
+                  ))}
                 </div>
-
-                <div className="text-sm text-gray-700">₹{s.price}</div>
               </div>
+              <p className="text-gray-600 text-sm">{r.text}</p>
             </div>
           ))}
         </div>
       </div>
-
-      {/* UPCOMING */}
+        {/* UPCOMING */}
       <div className="max-w-7xl mx-auto px-6 mb-10 mt-12">
         <h2 className="text-xl font-bold mb-4">Upcoming Movies</h2>
 

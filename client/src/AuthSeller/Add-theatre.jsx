@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import SellerNavbar from "../Components/Navbar";
-
+import {toast} from 'react-hot-toast'
 axios.defaults.withCredentials = true;
 
 const BMS_RED = "#f84464";
@@ -83,10 +83,10 @@ export default function AddTheatre() {
       const res = await axios.post("http://localhost:8000/api/seller/theatre", payload);
 
       if (res.data.ok) {
-        alert("Theatre added successfully ✅");
+        toast.success("Theatre added successfully ✅");
         navigate(`/seller/add-screen/${res.data.theatre._id}`);
       } else {
-        alert(res.data.message || "Failed to add theatre");
+        toast.error(res.data.message || "Failed to add theatre");
       }
     } catch (err) {
       console.error(err);

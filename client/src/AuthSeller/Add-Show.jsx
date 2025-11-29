@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import SellerNavbar from "../Components/Navbar";
 import SellerSidebar from "../Components/SellerSidebar";
-
+import {toast} from 'react-hot-toast'
 axios.defaults.withCredentials = true;
 
 /* ===============================
@@ -38,7 +38,8 @@ export default function AddShow() {
     poster: "",
     language: "English",
     format: "2D",
-    date: "",
+    startDate: "",
+    endDate: "",
     time: "",
     durationMinutes: "",
     endTime: "",
@@ -98,16 +99,27 @@ export default function AddShow() {
      ✅ SAVE SHOW
   ================================*/
   async function save() {
+    if (loading) return;
+
     const {
       movie,
-      date,
+      startDate,
+      endDate,
       time,
       durationMinutes,
       price,
       screenId,
     } = form;
 
-    if (!movie || !date || !time || !durationMinutes || !price || !screenId) {
+    if (
+      !movie ||
+      !startDate ||
+      !endDate ||
+      !time ||
+      !durationMinutes ||
+      !price ||
+      !screenId
+    ) {
       alert("All required fields must be filled");
       return;
     }
@@ -121,10 +133,10 @@ export default function AddShow() {
       );
 
       if (res.data.ok) {
-        alert("Show Created Successfully ✅");
+        toast.success("Show Created Successfully ✅");
         navigate(`/seller/shows/${theatreId}`);
       } else {
-        alert(res.data.message || "Failed to create show");
+        toast.error(res.data.message || "Failed to create show");
       }
     } catch (err) {
       console.error(err);
@@ -145,7 +157,6 @@ export default function AddShow() {
         <SellerNavbar />
 
         <main className="max-w-4xl mx-auto mt-10 bg-white p-8 shadow-lg rounded-lg">
-
           <h2 className="text-2xl font-bold text-[#f84464] mb-6">
             Add New Show
           </h2>
@@ -178,7 +189,6 @@ export default function AddShow() {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-
             <input
               name="movie"
               placeholder="Movie Name"
@@ -216,8 +226,16 @@ export default function AddShow() {
 
             <input
               type="date"
-              name="date"
-              value={form.date}
+              name="startDate"
+              value={form.startDate}
+              onChange={handleChange}
+              className="border p-2 rounded"
+            />
+
+            <input
+              type="date"
+              name="endDate"
+              value={form.endDate}
               onChange={handleChange}
               className="border p-2 rounded"
             />
@@ -314,17 +332,15 @@ export default function AddShow() {
                 <option value="cancelled">Cancelled</option>
               </select>
             </div>
-
           </div>
 
           <button
-            onClick={save}
+            onClick={!loading ? save : null}
             disabled={loading}
             className="mt-6 w-full bg-[#f84464] hover:bg-[#e63954] text-white font-semibold py-3 rounded-lg disabled:opacity-50"
           >
             {loading ? "Saving..." : "Create Show"}
           </button>
-
         </main>
       </div>
     </div>

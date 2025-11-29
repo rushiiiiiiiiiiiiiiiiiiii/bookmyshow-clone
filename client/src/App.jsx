@@ -29,6 +29,7 @@ import SeatPage from "./Pages/SeatPage";
 import PaymentPage from "./Pages/PaymentPage";
 import SuccessPage from "./Pages/SuccessPage";
 import BuyTicketsPage from "./Pages/BuyTicketsPage";
+import MyBookingsPage from "./Pages/MyBookingsPage";
 
 function App() {
   return (
@@ -56,6 +57,7 @@ function App() {
           <Route path="/pay" element={<PaymentPage />} />
           <Route path="/success" element={<SuccessPage />} />
           <Route path="/buytickets/:movieName" element={<BuyTicketsPage />} />
+          <Route path="/profile" element={<MyBookingsPage />} />
 
           {/* SELLER AUTH */}
           <Route path="/seller/signin" element={<SellerLogin />} />

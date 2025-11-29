@@ -51,6 +51,9 @@ const sampleMovies = [
       "https://images.unsplash.com/photo-1581093582520-22d56a2f7c05?q=80&w=400&auto=format&fit=crop",
   },
 ];
+function shuffleArray(arr) {
+  return [...arr].sort(() => 0.5 - Math.random());
+}
 
 // ============================================================
 // HERO (UNCHANGED)
@@ -58,7 +61,7 @@ const sampleMovies = [
 
 function Hero({ city, carouselMovies }) {
   const navigate = useNavigate();
-const firstMovie = carouselMovies?.[0];
+  const firstMovie = carouselMovies?.[0];
 
   return (
     <section className="relative bg-gradient-to-b from-[#fdf0f0] to-white rounded-b-xl shadow-inner">
@@ -94,14 +97,13 @@ const firstMovie = carouselMovies?.[0];
               }
               className="hidden md:flex justify-end pr-8 cursor-pointer"
             >
-              <div className="w-64 rounded-xl overflow-hidden shadow-2xl border bg-white">
+              <div className="w-64 rounded-xl overflow-hidden shadow-2xl bg-white">
                 <img
                   src={firstMovie.poster}
                   className="w-full h-72 object-cover"
                   alt={firstMovie.title}
                   onError={(e) => {
-                    e.target.src =
-                      "https://via.placeholder.com/300x450?text=No+Poster";
+                    e.target.src = "";
                   }}
                 />
                 <div className="p-4">
@@ -180,6 +182,26 @@ export default function Home() {
   const [city, setCity] = useState("Mumbai");
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
+  const carouselMovies = loading ? sampleMovies : movies;
+  const randomRecommended = shuffleArray(carouselMovies).slice(0, 10);
+  const [theatres, setTheatres] = useState([]);
+  useEffect(() => {
+    async function loadTheatres() {
+      try {
+        const res = await axios.get(
+          `http://localhost:8000/api/user/theatres?city=${city}`
+        );
+
+        if (res.data.ok) {
+          setTheatres(res.data.theatres || []);
+        }
+      } catch (err) {
+        console.error("Failed to load theatres", err);
+      }
+    }
+
+    loadTheatres();
+  }, [city]);
 
   useEffect(() => {
     const saved = localStorage.getItem("city");
@@ -215,8 +237,6 @@ export default function Home() {
     load();
   }, [city]);
 
-  const carouselMovies = loading ? sampleMovies : movies;
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -230,6 +250,20 @@ export default function Home() {
         ))}
       </div>
 
+      {/* CATEGORY GRID (UNCHANGED) */}
+      <SectionTitle title="Browse by Category" />
+      <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 ">
+        {["Comedy", "Sports", "Music", "Plays", "Workshops", "Movies"].map(
+          (c, i) => (
+            <div
+              key={i}
+              className="bg-white p-6 text-center shadow rounded-lg font-bold"
+            >
+              {c}
+            </div>
+          )
+        )}
+      </div>
       {/* UPCOMING MOVIES (✅ ADDED) */}
       <SectionTitle title="Upcoming Movies" />
 
@@ -286,31 +320,34 @@ export default function Home() {
       </div>
 
       {/* THEATERS (✅ ADDED) */}
+      {/* THEATERS (FROM BACKEND) */}
       <SectionTitle title={`Theatres Near You (${city})`} />
-      <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-        {[
-          { name: "PVR Cinemas", location: "Phoenix Mall" },
-          { name: "INOX", location: "R City Mall" },
-          { name: "Cinepolis", location: "Andheri" },
-          { name: "Carnival", location: "Thane" },
-        ].map((t, i) => (
-          <TheaterCard key={i} t={t} />
-        ))}
+
+      <div className="max-w-7xl mx-auto mb-10 px-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+        {theatres.length === 0 ? (
+          <p className="text-gray-500 col-span-full">No theatres found</p>
+        ) : (
+          theatres
+            .filter((t) => t.city === city)
+            .map((t) => (
+              <TheaterCard
+                key={t._id}
+                t={{
+                  name: t.name,
+                  location: t.city,
+                }}
+              />
+            ))
+        )}
       </div>
 
-      {/* CATEGORY GRID (UNCHANGED) */}
-      <SectionTitle title="Browse by Category" />
-      <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 pt-8 pb-12">
-        {["Comedy", "Sports", "Music", "Plays", "Workshops", "Movies"].map(
-          (c, i) => (
-            <div
-              key={i}
-              className="bg-white p-6 text-center shadow rounded-lg font-bold"
-            >
-              {c}
-            </div>
-          )
-        )}
+      {/* EXTRA RECOMMENDED MOVIES (✅ NEW) */}
+      <SectionTitle title="Recommended For You" />
+
+      <div className="max-w-7xl mx-auto px-4 flex gap-6 overflow-x-auto pb-10">
+        {randomRecommended.map((m, i) => (
+          <MovieCard key={i} m={m} />
+        ))}
       </div>
 
       <Footer />

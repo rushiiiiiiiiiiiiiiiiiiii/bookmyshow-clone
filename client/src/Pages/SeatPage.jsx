@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../Components/Navbar";
 import { useNavigate } from "react-router-dom";
+import {toast} from 'react-hot-toast'
 // --- Colors ---
 const BMS_GREEN = "#1FA85D";
 const BMS_BTN = "bg-[#f84464] hover:bg-[#e43a57]";
@@ -13,13 +14,14 @@ const AISLE_AFTER_SEAT = 6;
 // ------------------------------------------------
 // LEGEND
 // ------------------------------------------------
-function Legend({ color, border, label }) {
+function Legend({ color, border, label, style }) {
   return (
     <div className="flex items-center gap-2 text-xs text-gray-600">
       <div
         className={`w-4 h-4 rounded-sm ${color} ${
           border ? "border border-gray-400" : ""
         }`}
+        style={style}
       />
       {label}
     </div>
@@ -101,7 +103,7 @@ export default function SeatPage() {
     const max = show?.maxSeatsPerBooking || 1;
 
     if (!selected.includes(seat) && selected.length >= max) {
-      alert(`You can only book ${max} ticket(s) for this show.`);
+      toast.error(`You can only book ${max} ticket(s) for this show.`);
       return;
     }
 
@@ -238,7 +240,7 @@ export default function SeatPage() {
         <div className="flex justify-center gap-8 mt-8 border-t pt-5">
           <Legend color="bg-gray-400" label="Sold" />
           <Legend color="bg-white" border label="Available" />
-          <Legend color={`bg-[${BMS_GREEN}]`} label="Selected" />
+          <Legend label="Selected" style={{ backgroundColor: BMS_GREEN }} />
         </div>
       </div>
 
@@ -281,16 +283,27 @@ function Seat({ id, booked, selected, toggleSeat }) {
   const isBooked = booked.includes(id);
   const isSelected = selected.includes(id);
 
-  let style = "w-7 h-6 mx-1 mb-1 rounded-t-md transition-all duration-150";
+  let style =
+    "w-7 h-6 mx-1 mb-1 rounded-t-md transition-all duration-150 flex items-center justify-center text-[9px] font-semibold select-none";
 
   if (isBooked) {
-    style += " bg-gray-500 cursor-not-allowed";
+    style += " bg-gray-500 cursor-not-allowed text-white";
   } else if (isSelected) {
-    style += ` bg-[${BMS_GREEN}] shadow-md scale-105`;
+    style += " shadow-md scale-105 text-white";
   } else {
     style +=
-      " bg-white border border-gray-400 cursor-pointer hover:bg-gray-200";
+      " bg-white border border-gray-400 cursor-pointer hover:bg-gray-200 text-gray-800";
   }
 
-  return <div title={id} className={style} onClick={() => toggleSeat(id)} />;
+  return (
+    <div
+      title={id}
+      className={style}
+      style={isSelected ? { backgroundColor: BMS_GREEN } : {}}
+      onClick={() => toggleSeat(id)}
+    >
+      {id.slice(1)}
+    </div>
+  );
 }
+

@@ -92,6 +92,9 @@ function SellerNavbar() {
                 <LogOut size={14} />
                 Logout
               </button>
+              <button onClick={()=> navigate('/profile')}>
+                Your booking
+              </button>
             </div>
           )}
         </div>
@@ -275,9 +278,9 @@ function UserNavbar() {
               <div ref={profileRef} className="relative">
                 <div
                   onClick={() => setShowProfileMenu(!showProfileMenu)}
-                  className="w-9 h-9 rounded-full bg-gray-300 flex items-center justify-center cursor-pointer"
+                  className="w-9 h-9 rounded-full bg-red-500 flex items-center justify-center cursor-pointer"
                 >
-                  <span className="text-sm font-semibold">U</span>
+                  <span className="text-sm text-white font-semibold">U</span>
                 </div>
 
                 {showProfileMenu && (

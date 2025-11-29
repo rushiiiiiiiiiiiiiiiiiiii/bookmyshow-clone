@@ -41,9 +41,9 @@ const Footer = () => {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
                     <div className="flex items-center gap-4 text-white text-sm">
                         <img
-                            src="https://in.bmscdn.com/webin/common/icons/list-your-show-icon.svg"
+                            src="https://cdn-icons-png.freepik.com/512/12340/12340302.png"
                             alt="list-icon"
-                            className="w-8 h-8 filter brightness-0 invert"
+                            className="w-8 h-8"
                         />
                         <span className="font-semibold hidden sm:block">List Your Show</span>
                         <p className="text-gray-400 text-xs hidden sm:block">Got a show, event, activity or a great experience? Partner with us & get listed on BookMyShow</p>

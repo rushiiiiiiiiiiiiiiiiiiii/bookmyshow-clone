@@ -41,23 +41,28 @@ export default function PaymentPage() {
     try {
       setLoading(true);
 
-      const res = await axios.post("http://localhost:8000/api/booking", {
-        showId: show._id,
-        seats,
-        amount: finalTotal,
-      });
+      const res = await axios.post(
+        "http://localhost:8000/api/booking",
+        {
+          showId: show._id,
+          seats,
+          amount: finalTotal,
+        },
+        {
+          withCredentials: true, // ✅ VERY IMPORTANT
+        }
+      );
 
-      // ✅ FIX: Check booking object, not res.data.ok
       if (!res.data.booking) {
-        alert("Booking failed");
+        alert(res.data.msg || "Booking failed");
         return;
       }
 
-      // ✅ Redirect properly
       navigate("/success", {
         state: {
           booking: {
             _id: res.data.booking._id,
+            token: res.data.booking.bookingToken,
             movie: show.movie,
             poster: show.poster,
             theatre: show.theatreId.name,
@@ -70,8 +75,14 @@ export default function PaymentPage() {
         },
       });
     } catch (err) {
-      console.error("PAYMENT ERROR:", err);
-      alert("Payment failed");
+      console.error("PAYMENT ERROR:", err.response?.data || err);
+
+      if (err.response?.status === 401) {
+        alert("Please login to continue booking");
+        navigate("/login");
+      } else {
+        alert(err.response?.data?.msg || "Payment failed");
+      }
     } finally {
       setLoading(false);
     }

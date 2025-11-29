@@ -85,34 +85,34 @@ exports.addTheatre = async (req, res) => {
 /* ============================
    ✅ GET SELLER THEATRES
 ============================ */
-exports.getTheatres = async (req, res) => {
-  try {
-    const token = req.cookies.seller_token;
-    if (!token) {
-      return res.status(401).json({ ok: false, message: "Unauthorized" });
+  exports.getTheatres = async (req, res) => {
+    try {
+      const token = req.cookies.seller_token;
+      if (!token) {
+        return res.status(401).json({ ok: false, message: "Unauthorized" });
+      }
+
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+      const theatres = await Theatre.find({
+        sellerId: decoded.id,
+        isActive: true,
+      }).sort({ createdAt: -1 });
+
+      return res.json({
+        ok: true,
+        theatres,
+        total: theatres.length,
+      });
+
+    } catch (err) {
+      console.error("GET THEATRES ERROR:", err);
+      return res.status(500).json({
+        ok: false,
+        message: "Failed to fetch theatres",
+      });
     }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    const theatres = await Theatre.find({
-      sellerId: decoded.id,
-      isActive: true,
-    }).sort({ createdAt: -1 });
-
-    return res.json({
-      ok: true,
-      theatres,
-      total: theatres.length,
-    });
-
-  } catch (err) {
-    console.error("GET THEATRES ERROR:", err);
-    return res.status(500).json({
-      ok: false,
-      message: "Failed to fetch theatres",
-    });
-  }
-};
+  };
 
 
 /* ============================
@@ -221,5 +221,31 @@ exports.deleteTheatre = async (req, res) => {
   } catch (err) {
     console.error("DELETE THEATRE ERROR:", err);
     return res.status(500).json({ ok: false });
+  }
+};
+
+// ===================================
+// ✅ PUBLIC THEATRES API (FOR USERS)
+// ===================================
+exports.getPublicTheatres = async (req, res) => {
+  try {
+    const { city } = req.query;
+
+    const filter = { isActive: true };
+
+    if (city) filter.city = city;
+
+    const theatres = await Theatre.find(filter).sort({ createdAt: -1 });
+
+    res.json({
+      ok: true,
+      theatres
+    });
+  } catch (err) {
+    console.error("PUBLIC THEATRES ERROR:", err);
+    res.status(500).json({
+      ok: false,
+      message: "Failed to fetch theatres"
+    });
   }
 };

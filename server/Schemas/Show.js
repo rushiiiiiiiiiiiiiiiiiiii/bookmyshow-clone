@@ -104,5 +104,6 @@ const ShowSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+ShowSchema.index({ theatreId: 1, screenId: 1, date: 1, time: 1 }, { unique: true });
 
 module.exports = mongoose.model("Show", ShowSchema);

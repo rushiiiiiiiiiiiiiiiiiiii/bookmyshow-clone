@@ -25,19 +25,17 @@ function addMinutesToTime(timeStr, minutesToAdd) {
    ✅ ADD NEW SHOW
 ============================ */
 exports.addShow = async (req, res) => {
+  console.log("API HIT", Date.now());
+
   try {
     const token = req.cookies.seller_token;
     if (!token) {
-      return res.status(401).json({
-        ok: false,
-        message: "Unauthorized access",
-      });
+      return res.status(401).json({ ok: false, message: "Unauthorized access" });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const { theatreId } = req.params;
 
-    // ✅ Read once (FIXED)
     const {
       screenId,
       movie,
@@ -45,7 +43,8 @@ exports.addShow = async (req, res) => {
       language,
       format,
       time,
-      date,
+      startDate,
+      endDate,
       price,
       status,
       durationMinutes,
@@ -55,109 +54,87 @@ exports.addShow = async (req, res) => {
     } = req.body;
 
     // ✅ Validation
-    if (
-      !screenId ||
-      !movie ||
-      !language ||
-      !format ||
-      !date ||
-      !time ||
-      !price ||
-      !durationMinutes
-    ) {
-      return res.status(400).json({
-        ok: false,
-        message: "All required fields must be provided",
-      });
+    if (!screenId || !movie || !language || !format || !startDate || !endDate || !time || !price || !durationMinutes) {
+      return res.status(400).json({ ok: false, message: "All fields are required" });
     }
 
-    if (Number(durationMinutes) <= 0) {
-      return res.status(400).json({
-        ok: false,
-        message: "Duration must be greater than 0",
-      });
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    if (start > end) {
+      return res.status(400).json({ ok: false, message: "Invalid date range" });
+    }
+
+    // ✅ Confirm ownership
+    const theatre = await Theatre.findOne({ _id: theatreId, sellerId: decoded.id });
+    if (!theatre) {
+      return res.status(403).json({ ok: false, message: "Not your theatre" });
+    }
+
+    // ✅ Validate screen
+    const screen = await Screen.findOne({ _id: screenId, theatreId });
+    if (!screen) {
+      return res.status(400).json({ ok: false, message: "Invalid screen" });
     }
 
     const endTime = addMinutesToTime(time, durationMinutes);
     if (!endTime) {
-      return res.status(400).json({
-        ok: false,
-        message: "Invalid time or duration",
-      });
+      return res.status(400).json({ ok: false, message: "Invalid time or duration" });
     }
 
-    // ✅ Confirm theatre ownership
-    const theatre = await Theatre.findOne({
-      _id: theatreId,
-      sellerId: decoded.id,
-    });
+    const showsCreated = [];
+    let loopDate = new Date(start);
 
-    if (!theatre) {
-      return res.status(403).json({
-        ok: false,
-        message: "You do not own this theatre",
+    console.log("Creating shows from:", startDate, "to", endDate);
+
+    while (loopDate <= end) {
+      const dateStr = loopDate.toISOString().split("T")[0];
+
+      const exists = await Show.findOne({
+        theatreId,
+        screenId,
+        date: dateStr,
+        time,
+        status: { $ne: "cancelled" },
       });
+
+      if (!exists) {
+        const show = await Show.create({
+          theatreId,
+          screenId,
+          movie,
+          poster,
+          language,
+          format,
+          date: dateStr,
+          time,
+          endTime,
+          durationMinutes,
+          price,
+          status: status || "active",
+          isSubtitled: !!isSubtitled,
+          certificate: certificate || "UA",
+          maxSeatsPerBooking: maxSeatsPerBooking || 10,
+          totalSeats: screen.totalSeats,
+        });
+        showsCreated.push(show);
+      }
+
+      loopDate.setDate(loopDate.getDate() + 1);
     }
-
-    // ✅ Confirm screen belongs to theatre
-    const screen = await Screen.findOne({ _id: screenId, theatreId });
-    if (!screen) {
-      return res.status(400).json({
-        ok: false,
-        message: "Invalid screen selected",
-      });
-    }
-
-    // ✅ Prevent duplicate shows
-    const exists = await Show.findOne({
-      theatreId,
-      screenId,
-      date,
-      time,
-      status: { $ne: "cancelled" },
-    });
-
-    if (exists) {
-      return res.status(409).json({
-        ok: false,
-        message: "A show is already scheduled on this screen at this time",
-      });
-    }
-
-    // ✅ CREATE SHOW
-    const show = await Show.create({
-      theatreId,
-      screenId,
-      movie,
-      poster, // ✅ Save poster
-      language,
-      format,
-      date,
-      time,
-      endTime,
-      durationMinutes,
-      price,
-      status: status || "active",
-      isSubtitled: !!isSubtitled,
-      certificate: certificate || "UA",
-      maxSeatsPerBooking: maxSeatsPerBooking || 10,
-      totalSeats: screen.totalSeats,
-    });
 
     return res.json({
       ok: true,
-      message: "Show created successfully",
-      show,
+      message: `${showsCreated.length} shows created successfully`,
+      showsCreated,
     });
 
   } catch (err) {
     console.error("ADD SHOW ERROR:", err);
-    res.status(500).json({
-      ok: false,
-      message: "Unable to create show",
-    });
+    res.status(500).json({ ok: false, message: "Server error" });
   }
 };
+
 
 
 /* ============================
