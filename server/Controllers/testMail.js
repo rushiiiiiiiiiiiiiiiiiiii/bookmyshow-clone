@@ -1,4 +1,4 @@
-const transporter = require("../utils/mail");
+const transporter = require("../utils/Mail");
 
 exports.testMail = async (req, res) => {
   try {
