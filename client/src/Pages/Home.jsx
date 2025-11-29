@@ -30,8 +30,7 @@ const sampleMovies = [
     title: "Space Odyssey",
     sub: "English · 2h 40m",
     rating: "9.4/10",
-    poster:
-      "https://m.media-amazon.com/images/I/81mZDyQhLBL.jpg",
+    poster: "https://m.media-amazon.com/images/I/81mZDyQhLBL.jpg",
   },
   {
     id: 4,
@@ -180,6 +179,19 @@ function TheaterCard({ t }) {
 // ============================================================
 export default function Home() {
   const [city, setCity] = useState("Mumbai");
+  useEffect(() => {
+    function handleCityChange() {
+      const updatedCity = localStorage.getItem("city");
+      if (updatedCity) setCity(updatedCity);
+    }
+
+    window.addEventListener("cityChanged", handleCityChange);
+
+    return () => {
+      window.removeEventListener("cityChanged", handleCityChange);
+    };
+  }, []);
+
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const carouselMovies = loading ? sampleMovies : movies;
@@ -273,10 +285,10 @@ export default function Home() {
             title: "Dunki",
             img: "https://m.media-amazon.com/images/I/91zOCNs+x-L.jpg",
           },
-          {
-            title: "Pushpa 2",
-            img: "https://m.media-amazon.com/images/M/MV5BZjllNTdiM2QtYjQ0Ni00ZGM1LWFlYmUtNWY0YjMzYWIxOTYxXkEyXkFqcGc@._V1_.jpg",
-          },
+          // {
+          //   title: "Pushpa 2",
+          //   img: "https://m.media-amazon.com/images/M/MV5BZjllNTdiM2QtYjQ0Ni00ZGM1LWFlYmUtNWY0YjMzYWIxOTYxXkEyXkFqcGc@._V1_.jpg",
+          // },
           {
             title: "KGF Chapter 3",
             img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSE5XXL0RadcwWnn6JfiAlGK5lvHiZ1lMhogA&s",
@@ -293,10 +305,10 @@ export default function Home() {
             title: "Tiger 3",
             img: "https://upload.wikimedia.org/wikipedia/en/f/f8/Tiger_3_poster.jpg",
           },
-          {
-            title: "Fighter",
-            img: "https://upload.wikimedia.org/wikipedia/en/d/df/Fighter_film_teaser.jpg",
-          },
+          // {
+          //   title: "Fighter",
+          //   img: "https://upload.wikimedia.org/wikipedia/en/d/df/Fighter_film_teaser.jpg",
+          // },
           {
             title: "Jawan 2",
             img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5xzqrrx8pVxJ5eJd_PbVV1WVxRcPRHrRNNA&s",

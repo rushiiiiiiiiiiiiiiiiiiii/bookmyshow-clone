@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { ChevronDown, Search } from "lucide-react";
+import { ChevronDown, Search, Menu, X } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { LogOut } from "lucide-react";
 
@@ -10,6 +10,7 @@ function SellerNavbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [open, setOpen] = useState(false);
+  const [mobileMenu, setMobileMenu] = useState(false);
 
   function signOut() {
     document.cookie = "seller_token=; Max-Age=0; path=/;";
@@ -23,82 +24,89 @@ function SellerNavbar() {
 
   return (
     <header className="w-full bg-white shadow-sm sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-6 py-3">
+
         {/* LEFT: LOGO */}
         <div
           onClick={() => navigate("/seller/dashboard")}
           className="cursor-pointer flex items-center gap-3"
         >
-          {/* <img
-            src="https://upload.wikimedia.org/wikipedia/commons/7/75/Bookmyshow-logoid.png"
-            className="h-8"
-            alt="BookMyShow Partner"
-          /> */}
           <span className="text-lg font-semibold text-gray-500">
             Partner Panel
           </span>
         </div>
 
-        {/* CENTER: MENU */}
-        <nav className="flex gap-6 text-sm">
-          <button
-            onClick={() => navigate("/seller/dashboard")}
-            className={isActive("/seller/dashboard")}
-          >
+        {/* CENTER: MENU (DESKTOP) */}
+        <nav className="hidden md:flex gap-6 text-sm">
+          <button onClick={() => navigate("/seller/dashboard")} className={isActive("/seller/dashboard")}>
             Dashboard
           </button>
-
-          <button
-            onClick={() => navigate("/seller/theatres")}
-            className={isActive("/seller/theatres")}
-          >
+          <button onClick={() => navigate("/seller/theatres")} className={isActive("/seller/theatres")}>
             Theatres
           </button>
-
-          <button
-            onClick={() => navigate("/seller/screens")}
-            className={isActive("/seller/screens")}
-          >
+          <button onClick={() => navigate("/seller/screens")} className={isActive("/seller/screens")}>
             Screens
           </button>
-
-          <button
-            onClick={() => navigate("/seller/shows")}
-            className={isActive("/seller/shows")}
-          >
+          <button onClick={() => navigate("/seller/shows")} className={isActive("/seller/shows")}>
             Shows
           </button>
         </nav>
 
-        {/* RIGHT: PROFILE MENU */}
-        <div className="relative">
+        {/* RIGHT */}
+        <div className="flex items-center gap-4">
+
+          {/* MOBILE MENU BUTTON */}
           <button
-            onClick={() => setOpen(!open)}
-            className="flex items-center gap-2 cursor-pointer"
+            onClick={() => setMobileMenu(!mobileMenu)}
+            className="md:hidden"
           >
-            <div className="w-9 h-9 rounded-full bg-[#f84464] text-white flex items-center justify-center font-semibold">
-              S
-            </div>
-            <ChevronDown size={16} />
+            {mobileMenu ? <X /> : <Menu />}
           </button>
 
-          {/* DROPDOWN */}
-          {open && (
-            <div className="absolute right-0 mt-2 w-40 bg-white  rounded-lg shadow-md">
-              <button
-                onClick={signOut}
-                className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-              >
-                <LogOut size={14} />
-                Logout
-              </button>
-              <button onClick={()=> navigate('/profile')}>
-                Your booking
-              </button>
-            </div>
-          )}
+          {/* PROFILE MENU (DESKTOP) */}
+          <div className="relative hidden md:block">
+            <button
+              onClick={() => setOpen(!open)}
+              className="flex items-center gap-2 cursor-pointer"
+            >
+              <div className="w-9 h-9 rounded-full bg-[#f84464] text-white flex items-center justify-center font-semibold">
+                S
+              </div>
+              <ChevronDown size={16} />
+            </button>
+
+            {open && (
+              <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-md">
+                <button
+                  onClick={signOut}
+                  className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                >
+                  <LogOut size={14} />
+                  Logout
+                </button>
+                <button
+                  onClick={() => navigate("/profile")}
+                  className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                >
+                  Your booking
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
+
+      {/* MOBILE SELLER MENU */}
+      {mobileMenu && (
+        <div className="md:hidden bg-white border-t p-4 space-y-3">
+          <button onClick={() => navigate("/seller/dashboard")} className="block w-full text-left">Dashboard</button>
+          <button onClick={() => navigate("/seller/theatres")} className="block w-full text-left">Theatres</button>
+          <button onClick={() => navigate("/seller/screens")} className="block w-full text-left">Screens</button>
+          <button onClick={() => navigate("/seller/shows")} className="block w-full text-left">Shows</button>
+          <button onClick={() => navigate("/profile")} className="block w-full text-left">Bookings</button>
+          <button onClick={signOut} className="block w-full text-left text-red-500">Logout</button>
+        </div>
+      )}
     </header>
   );
 }
@@ -111,24 +119,24 @@ function UserNavbar() {
   const [showCityMenu, setShowCityMenu] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [mobileMenu, setMobileMenu] = useState(false);
   const navigate = useNavigate();
 
   const cityRef = useRef(null);
   const profileRef = useRef(null);
 
-  // Check login
   useEffect(() => {
     const hasToken = document.cookie.includes("token=");
     setLoggedIn(hasToken);
   }, []);
+
   function selectCity(cityName) {
     setCity(cityName);
     localStorage.setItem("city", cityName);
     setShowCityMenu(false);
-    window.location.reload();
+    window.dispatchEvent(new Event("cityChanged"));
   }
 
-  // Click outside handler
   useEffect(() => {
     function handleClickOutside(event) {
       if (profileRef.current && !profileRef.current.contains(event.target)) {
@@ -161,121 +169,162 @@ function UserNavbar() {
   ];
 
   const popularCities = [
-    {
-      name: "Mumbai",
-      icon: "https://in.bmscdn.com/m6/images/common-modules/regions/mumbai.png",
-    },
-    {
-      name: "Delhi-NCR",
-      icon: "https://in.bmscdn.com/m6/images/common-modules/regions/ncr.png",
-    },
-    {
-      name: "Bengaluru",
-      icon: "https://in.bmscdn.com/m6/images/common-modules/regions/bengaluru.png",
-    },
-    {
-      name: "Hyderabad",
-      icon: "https://in.bmscdn.com/m6/images/common-modules/regions/hyderabad.png",
-    },
-    {
-      name: "Chandigarh",
-      icon: "https://in.bmscdn.com/m6/images/common-modules/regions/chandigarh.png",
-    },
-    {
-      name: "Ahmedabad",
-      icon: "https://in.bmscdn.com/m6/images/common-modules/regions/ahmedabad.png",
-    },
-    {
-      name: "Pune",
-      icon: "https://in.bmscdn.com/m6/images/common-modules/regions/pune.png",
-    },
-    {
-      name: "Chennai",
-      icon: "https://in.bmscdn.com/m6/images/common-modules/regions/chennai.png",
-    },
-    {
-      name: "Kolkata",
-      icon: "https://in.bmscdn.com/m6/images/common-modules/regions/kolkata.png",
-    },
-    {
-      name: "Kochi",
-      icon: "https://in.bmscdn.com/m6/images/common-modules/regions/kochi.png",
-    },
+    { name: "Mumbai", icon: "https://in.bmscdn.com/m6/images/common-modules/regions/mumbai.png" },
+    { name: "Delhi-NCR", icon: "https://in.bmscdn.com/m6/images/common-modules/regions/ncr.png" },
+    { name: "Bengaluru", icon: "https://in.bmscdn.com/m6/images/common-modules/regions/bengaluru.png" },
+    { name: "Hyderabad", icon: "https://in.bmscdn.com/m6/images/common-modules/regions/hyderabad.png" },
+    { name: "Chandigarh", icon: "https://in.bmscdn.com/m6/images/common-modules/regions/chandigarh.png" },
+    { name: "Ahmedabad", icon: "https://in.bmscdn.com/m6/images/common-modules/regions/ahmedabad.png" },
+    { name: "Pune", icon: "https://in.bmscdn.com/m6/images/common-modules/regions/pune.png" },
+    { name: "Chennai", icon: "https://in.bmscdn.com/m6/images/common-modules/regions/chennai.png" },
+    { name: "Kolkata", icon: "https://in.bmscdn.com/m6/images/common-modules/regions/kolkata.png" },
+    { name: "Kochi", icon: "https://in.bmscdn.com/m6/images/common-modules/regions/kochi.png" },
   ];
 
   return (
     <div className="relative font-sans">
-      {/* PRIMARY NAV BAR */}
+
+      {/* TOP NAV */}
       <div className="w-full bg-white shadow-lg z-50">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          {/* LOGO + SEARCH */}
-          <div className="flex items-center gap-6 w-3/4">
-            <img onClick={()=> navigate('/')}
-              src="https://upload.wikimedia.org/wikipedia/commons/7/75/Bookmyshow-logoid.png"
-              className="w-16 h-8 md:w-28 md:h-10"
-              alt="logo"
-            />
 
-            <div className="relative hidden lg:flex w-full max-w-xl">
-              <input
-                type="text"
-                placeholder="Search for Movies, Events, Plays, Sports and more"
-                className="w-full bg-white border border-gray-300 px-4 py-2 pl-10 rounded-md text-sm"
-              />
-              <Search
-                size={18}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
-              />
-            </div>
+          <img
+            onClick={() => navigate("/")}
+            src="https://upload.wikimedia.org/wikipedia/commons/7/75/Bookmyshow-logoid.png"
+            className="w-16 h-8 md:w-28 md:h-10 cursor-pointer"
+            alt="logo"
+          />
+
+          {/* SEARCH (DESKTOP) */}
+          <div className="relative hidden lg:flex w-full max-w-xl">
+            <input
+              type="text"
+              placeholder="Search for Movies, Events, Plays, Sports and more"
+              className="w-full bg-white border border-gray-300 px-4 py-2 pl-10 rounded-md text-sm"
+            />
+            <Search
+              size={18}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+            />
           </div>
 
           {/* RIGHT */}
           <div className="flex items-center gap-4 md:gap-6">
-            {/* CITY */}
-            {/* CITY */}
-            <div ref={cityRef} className="relative">
-              <button
-                onClick={() => setShowCityMenu(!showCityMenu)}
-                className="flex items-center gap-1 hover:text-[#f84464]"
-              >
-                {city}
-                <ChevronDown size={18} />
-              </button>
 
-              {/* CITY DROPDOWN */}
-              {showCityMenu && (
-                <div className="absolute top-full mt-2 left-0 bg-white shadow-xl rounded-lg w-56 z-50 border">
-                  <p className="p-3 text-sm text-gray-500 font-medium">
-                    Popular Cities
-                  </p>
+            {/* CITY SELECTOR */}
+            {/* CITY SELECTOR */}
+<div className="relative hidden md:block">
+  <button
+    onClick={() => setShowCityMenu(true)}
+    className="flex items-center gap-1 hover:text-[#f84464]"
+  >
+    {city}
+    <ChevronDown size={18} />
+  </button>
 
-                  {popularCities.map((c) => (
-                    <div
-                      key={c.name}
-                      className="flex items-center gap-3 px-4 py-2 cursor-pointer hover:bg-gray-100"
-                      onClick={() => selectCity(c.name)}
-                    >
-                      <img src={c.icon} className="w-6 h-6 object-contain" />
-                      <span>{c.name}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
+  {/* FULL SCREEN CITY MODAL */}
+  {showCityMenu && (
+    <div className="fixed inset-0 z-[9999] bg-black/50 flex justify-center items-start pt-20">
+
+      {/* CITY POPUP BOX */}
+      <div
+        ref={cityRef}
+        className="bg-white w-[90%] max-w-4xl rounded-xl shadow-xl p-6 relative"
+      >
+
+        {/* SEARCH */}
+        <input
+          type="text"
+          placeholder="Search for your city"
+          className="w-full border px-4 py-2 rounded-md outline-none"
+        />
+
+        {/* DETECT LOCATION */}
+        <p className="mt-4 text-[#f84464] font-medium cursor-pointer">
+          📍 Detect my location
+        </p>
+
+        <hr className="my-5" />
+
+        {/* POPULAR CITIES */}
+        <h3 className="text-center text-gray-600 font-semibold mb-4">
+          Popular Cities
+        </h3>
+
+        <div className="grid grid-cols-5 gap-5 text-center">
+          {popularCities.map((c) => (
+            <div
+              key={c.name}
+              onClick={() => selectCity(c.name)}
+              className="flex flex-col items-center cursor-pointer hover:text-[#f84464]"
+            >
+              <img src={c.icon} className="w-12 h-12 object-contain" />
+              <p className="text-sm mt-2">{c.name}</p>
             </div>
+          ))}
+        </div>
 
-            {/* LOGIN */}
+        <hr className="my-6" />
+
+        {/* OTHER CITIES (BOOKMYSHOW STYLE) */}
+        <h4 className="text-center text-gray-600 font-medium mb-3">
+          Other Cities
+        </h4>
+
+        <div className="grid grid-cols-5 text-sm text-gray-500 gap-y-2 gap-x-4 max-h-48 overflow-y-auto">
+          {[
+            "Aalo","Addanki","Agar Malwa","Ahmedgarh","Akbarpur","Alibaug",
+            "Abohar","Agartala","Aligarh","Aizawl","Ajmer","Akola","Alappuzha",
+            "Ambala","Amravati","Anand","Ankleshwar","Arrah","Asansol",
+            "Aurangabad","Balaghat","Ballari","Banswara","Baramati",
+            "Bathinda","Belagavi","Betul","Bharatpur","Bhind","Bhiwani",
+            "Bhopal","Bikaner","Bilaspur","Bokaro","Bundi","Burhanpur",
+            "Chandausi","Chhapra","Chittorgarh","Coimbatore","Davanagere",
+            "Dehradun","Dewas","Dhanbad","Dhule","Erode","Etawah","Gandhidham",
+            "Gaya","Godhra","Gondia","Gudur","Guna","Guntur","Haldwani",
+            "Hassan","Hojai","Hoshangabad","Hubli","Ichalkaranji","Itanagar",
+            "Jabalpur","Jagdalpur","Jalgaon","Jhansi","Junagadh","Kadapa",
+            "Kaithal","Kalaburagi","Karnal","Katni","Khandwa","Kolar",
+            "Koppal","Latur","Mahoba","Malegaon","Mandya","Mirzapur",
+            "Moradabad","Mysuru","Nadiad","Nalgonda","Nanded","Neemuch",
+            "Ongole","Palanpur","Panna","Parbhani","Raichur","Rajsamand",
+            "Rewa","Sagar","Satara","Sehore","Shivpuri","Singrauli",
+            "Sirohi","Solapur","Sri Ganganagar","Sultanpur","Surendranagar",
+            "Tirunelveli","Tumakuru","Udgir","Ujjain","Una","Wani","Wardha",
+            "Yamunanagar"
+          ].map((c) => (
+            <p key={c} onClick={() => selectCity(c)} className="cursor-pointer hover:text-[#f84464]">
+              {c}
+            </p>
+          ))}
+        </div>
+
+        {/* CLOSE */}
+        <p
+          onClick={() => setShowCityMenu(false)}
+          className="text-center mt-6 text-[#f84464] cursor-pointer font-medium"
+        >
+          Hide all cities
+        </p>
+
+      </div>
+    </div>
+  )}
+</div>
+
+
             {!loggedIn && (
               <button
                 onClick={() => navigate("/register")}
-                className="bg-[#f84464] text-white px-4 py-1.5 rounded-md text-sm hidden sm:block"
+                className="bg-[#f84464] text-white px-3 py-1.5 rounded-md text-sm hidden sm:block"
               >
                 Sign in
               </button>
             )}
 
-            {/* PROFILE */}
+            {/* PROFILE (DESKTOP) */}
             {loggedIn && (
-              <div ref={profileRef} className="relative">
+              <div ref={profileRef} className="relative hidden md:block">
                 <div
                   onClick={() => setShowProfileMenu(!showProfileMenu)}
                   className="w-9 h-9 rounded-full bg-red-500 flex items-center justify-center cursor-pointer"
@@ -284,7 +333,7 @@ function UserNavbar() {
                 </div>
 
                 {showProfileMenu && (
-                  <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg  z-50">
+                  <div className="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-lg z-50">
                     <p
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                       onClick={() => navigate("/profile")}
@@ -301,11 +350,62 @@ function UserNavbar() {
                 )}
               </div>
             )}
+
+            {/* MOBILE ICON */}
+            <button onClick={() => setMobileMenu(!mobileMenu)} className="md:hidden">
+              {mobileMenu ? <X /> : <Menu />}
+            </button>
           </div>
         </div>
       </div>
 
-      {/* SECOND NAV */}
+      {/* MOBILE USER MENU */}
+      {mobileMenu && (
+        <div className="md:hidden bg-white shadow border-t p-4 space-y-3">
+
+          {/* CITY */}
+          <div className="border-b pb-2">
+            <p className="text-sm font-semibold mb-1">Select City</p>
+            {popularCities.map((c) => (
+              <p
+                key={c.name}
+                onClick={() => selectCity(c.name)}
+                className="cursor-pointer py-1"
+              >
+                {c.name}
+              </p>
+            ))}
+          </div>
+
+          {/* NAV LINKS */}
+          {categories.map(cat => (
+            <p key={cat} className="cursor-pointer">{cat}</p>
+          ))}
+
+          {!loggedIn && (
+            <button
+              onClick={() => navigate("/register")}
+              className="bg-[#f84464] text-white w-full py-2 rounded"
+            >
+              Sign in
+            </button>
+          )}
+
+          {loggedIn && (
+            <>
+              <button onClick={() => navigate("/profile")} className="block w-full text-left">
+                My Profile
+              </button>
+              <button onClick={handleSignOut} className="block w-full text-left text-red-500">
+                Logout
+              </button>
+            </>
+          )}
+
+        </div>
+      )}
+
+      {/* SECOND NAV DESKTOP */}
       <div className="bg-[#f8f8f8] hidden md:block">
         <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between">
           <div className="flex gap-6 text-sm text-gray-600">
@@ -329,6 +429,7 @@ function UserNavbar() {
           </div>
         </div>
       </div>
+
     </div>
   );
 }
