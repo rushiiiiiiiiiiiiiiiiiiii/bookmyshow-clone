@@ -74,7 +74,7 @@ exports.verifyOtp = async (req, res) => {
     const cookieName = user.role === "admin" ? "admin_token" : "token";
 
     res.cookie(cookieName, token, {
-      // //production
+      //production
       httpOnly: true,
       secure: true,
       sameSite: "none",

@@ -7,6 +7,9 @@ if (!BREVO_API_KEY) {
   console.error("❌ BREVO_API_KEY missing");
 }
 
+console.log("BREVO KEY PREFIX:", process.env.BREVO_API_KEY?.slice(0, 8));
+
+
 async function sendOtpEmail({ to, subject, html }) {
   try {
     const response = await axios.post(

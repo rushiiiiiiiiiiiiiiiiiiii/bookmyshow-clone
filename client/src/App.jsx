@@ -149,6 +149,22 @@ function App() {
               </SellerProtectedRoute>
             }
           />
+          <Route
+            path="/seller/screens"
+            element={
+              <SellerProtectedRoute>
+                <ScreenList />
+              </SellerProtectedRoute>
+            }
+          />
+          <Route
+            path="/seller/shows"
+            element={
+              <SellerProtectedRoute>
+                <ShowsList />
+              </SellerProtectedRoute>
+            }
+          />
 
           <Route
             path="/seller/screens/:theatreId"
