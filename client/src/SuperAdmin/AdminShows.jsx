@@ -24,7 +24,9 @@ export default function AdminShows() {
   async function loadShows() {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:8000/api/admin/shows");
+      const res = await axios.get(
+        "https://bookmyshow-backend-mzd2.onrender.com/api/admin/shows"
+      );
 
       if (res.data.ok) {
         const grouped = groupShows(res.data.shows);
@@ -76,15 +78,11 @@ export default function AdminShows() {
     let filtered = allGroups;
 
     if (movieFilter) {
-      filtered = filtered.filter(
-        (g) => g.movie === movieFilter
-      );
+      filtered = filtered.filter((g) => g.movie === movieFilter);
     }
 
     if (theatreFilter) {
-      filtered = filtered.filter(
-        (g) => g.theatre === theatreFilter
-      );
+      filtered = filtered.filter((g) => g.theatre === theatreFilter);
     }
 
     setGroups(filtered);
@@ -125,9 +123,7 @@ export default function AdminShows() {
         <AdminNavbar />
 
         <main className="p-6 max-w-7xl mx-auto w-full">
-          <h2 className="text-2xl font-bold mb-4">
-            Show Management
-          </h2>
+          <h2 className="text-2xl font-bold mb-4">Show Management</h2>
 
           {/* FILTERS */}
           <div className="bg-white p-4 rounded shadow mb-6 flex flex-wrap gap-4">
@@ -213,12 +209,8 @@ export default function AdminShows() {
                           </div>
                         </td>
 
-                        <td className="p-3 font-medium">
-                          ₹ {g.price}
-                        </td>
-                        <td className="p-3">
-                          {badge(g.status)}
-                        </td>
+                        <td className="p-3 font-medium">₹ {g.price}</td>
+                        <td className="p-3">{badge(g.status)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -228,13 +220,8 @@ export default function AdminShows() {
               {/* PAGINATION FOOTER */}
               <div className="flex justify-between items-center mt-4 text-sm">
                 <div className="text-gray-600">
-                  Showing{" "}
-                  {(page - 1) * PAGE_SIZE + 1}–
-                  {Math.min(
-                    page * PAGE_SIZE,
-                    groups.length
-                  )}{" "}
-                  of {groups.length}
+                  Showing {(page - 1) * PAGE_SIZE + 1}–
+                  {Math.min(page * PAGE_SIZE, groups.length)} of {groups.length}
                 </div>
 
                 <div className="flex gap-2">

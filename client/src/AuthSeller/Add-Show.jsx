@@ -64,7 +64,7 @@ export default function AddShow() {
   async function loadScreens() {
     try {
       const res = await axios.get(
-        `http://localhost:8000/api/seller/screens/${theatreId}`
+        `https://bookmyshow-backend-mzd2.onrender.com/api/seller/screens/${theatreId}`
       );
       if (res.data.ok) setScreens(res.data.screens);
     } catch {
@@ -128,7 +128,7 @@ export default function AddShow() {
       setLoading(true);
 
       const res = await axios.post(
-        `http://localhost:8000/api/seller/show/${theatreId}`,
+        `https://bookmyshow-backend-mzd2.onrender.com/api/seller/show/${theatreId}`,
         form
       );
 

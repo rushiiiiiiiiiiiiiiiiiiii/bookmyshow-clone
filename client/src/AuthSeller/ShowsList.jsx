@@ -29,8 +29,8 @@ export default function ShowsList() {
     try {
       setLoading(true);
       const url = theatreId
-        ? `http://localhost:8000/api/seller/shows/${theatreId}`
-        : `http://localhost:8000/api/seller/shows`;
+        ? `https://bookmyshow-backend-mzd2.onrender.com/api/seller/shows/${theatreId}`
+        : `https://bookmyshow-backend-mzd2.onrender.com/api/seller/shows`;
 
       const res = await axios.get(url);
 
@@ -53,7 +53,7 @@ export default function ShowsList() {
   // ✅ DELETE CONFIRMED
   async function confirmCancel() {
     await axios.delete(
-      `http://localhost:8000/api/seller/show/${selectedShow._id}`
+      `https://bookmyshow-backend-mzd2.onrender.com/api/seller/show/${selectedShow._id}`
     );
     setShowModal(false);
     setSelectedShow(null);
@@ -69,15 +69,18 @@ export default function ShowsList() {
   // ✅ UPDATE CONFIRMED
   async function confirmUpdate() {
     try {
-      await axios.put(`http://localhost:8000/api/seller/show/${editData._id}`, {
-        movie: editData.movie,
-        time: editData.time,
-        durationMinutes: editData.durationMinutes,
-        price: editData.price,
-        status: editData.status,
-        language: editData.language,
-        format: editData.format,
-      });
+      await axios.put(
+        `https://bookmyshow-backend-mzd2.onrender.com/api/seller/show/${editData._id}`,
+        {
+          movie: editData.movie,
+          time: editData.time,
+          durationMinutes: editData.durationMinutes,
+          price: editData.price,
+          status: editData.status,
+          language: editData.language,
+          format: editData.format,
+        }
+      );
 
       setEditModal(false);
       loadShows();

@@ -29,40 +29,45 @@ export default function SellerDashboard() {
     loadStats();
   }, []);
 
- async function loadStats() {
-  try {
-    const [theatresRes, screensRes, showsRes, bookingsRes] =
-      await Promise.all([
-        axios.get("http://localhost:8000/api/seller/theatres"),
-        axios.get("http://localhost:8000/api/seller/screens"),
-        axios.get("http://localhost:8000/api/seller/shows"),
-        axios.get("http://localhost:8000/api/seller/bookings"),
-      ]);
+  async function loadStats() {
+    try {
+      const [theatresRes, screensRes, showsRes, bookingsRes] =
+        await Promise.all([
+          axios.get(
+            "https://bookmyshow-backend-mzd2.onrender.com/api/seller/theatres"
+          ),
+          axios.get(
+            "https://bookmyshow-backend-mzd2.onrender.com/api/seller/screens"
+          ),
+          axios.get(
+            "https://bookmyshow-backend-mzd2.onrender.com/api/seller/shows"
+          ),
+          axios.get(
+            "https://bookmyshow-backend-mzd2.onrender.com/api/seller/bookings"
+          ),
+        ]);
 
-    const bookings = bookingsRes.data.bookings || [];
+      const bookings = bookingsRes.data.bookings || [];
 
-    const bookingsCount = bookings.length;
+      const bookingsCount = bookings.length;
 
-    const totalEarnings = bookings
-      .filter(
-        (b) =>
-          b.paymentStatus === "success" &&
-          b.status === "confirmed"
-      )
-      .reduce((sum, b) => sum + (b.amount || 0), 0);
+      const totalEarnings = bookings
+        .filter(
+          (b) => b.paymentStatus === "success" && b.status === "confirmed"
+        )
+        .reduce((sum, b) => sum + (b.amount || 0), 0);
 
-    setStats({
-      theatres: theatresRes.data.theatres?.length || 0,
-      screens: screensRes.data.screens?.length || 0,
-      shows: showsRes.data.shows?.length || 0,
-      bookings: bookingsCount,
-      earnings: totalEarnings,
-    });
-  } catch (err) {
-    console.error("Dashboard stats error:", err);
+      setStats({
+        theatres: theatresRes.data.theatres?.length || 0,
+        screens: screensRes.data.screens?.length || 0,
+        shows: showsRes.data.shows?.length || 0,
+        bookings: bookingsCount,
+        earnings: totalEarnings,
+      });
+    } catch (err) {
+      console.error("Dashboard stats error:", err);
+    }
   }
-}
-
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
@@ -86,11 +91,7 @@ export default function SellerDashboard() {
               value={stats.screens}
               icon={<Monitor />}
             />
-            <StatCard
-              title="Shows"
-              value={stats.shows}
-              icon={<Calendar />}
-            />
+            <StatCard title="Shows" value={stats.shows} icon={<Calendar />} />
             <StatCard
               title="Bookings"
               value={stats.bookings}

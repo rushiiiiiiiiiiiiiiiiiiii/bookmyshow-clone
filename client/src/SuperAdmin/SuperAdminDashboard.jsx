@@ -35,19 +35,24 @@ export default function SuperAdminDashboard() {
 
   async function loadDashboardStats() {
     try {
-      const [
-        sellersRes,
-        theatresRes,
-        screensRes,
-        showsRes,
-        bookingsRes,
-      ] = await Promise.all([
-        axios.get("http://localhost:8000/api/admin/sellers"),
-        axios.get("http://localhost:8000/api/admin/theatres"),
-        axios.get("http://localhost:8000/api/admin/screens"),
-        axios.get("http://localhost:8000/api/admin/shows"),
-        axios.get("http://localhost:8000/api/admin/bookings"),
-      ]);
+      const [sellersRes, theatresRes, screensRes, showsRes, bookingsRes] =
+        await Promise.all([
+          axios.get(
+            "https://bookmyshow-backend-mzd2.onrender.com/api/admin/sellers"
+          ),
+          axios.get(
+            "https://bookmyshow-backend-mzd2.onrender.com/api/admin/theatres"
+          ),
+          axios.get(
+            "https://bookmyshow-backend-mzd2.onrender.com/api/admin/screens"
+          ),
+          axios.get(
+            "https://bookmyshow-backend-mzd2.onrender.com/api/admin/shows"
+          ),
+          axios.get(
+            "https://bookmyshow-backend-mzd2.onrender.com/api/admin/bookings"
+          ),
+        ]);
 
       setStats({
         sellers: sellersRes.data?.sellers?.length || 0,
@@ -71,17 +76,11 @@ export default function SuperAdminDashboard() {
 
         <main className="p-6 max-w-7xl mx-auto w-full">
           {/* HEADER */}
-          <h2 className="text-2xl font-bold mb-6">
-            Super Admin Dashboard
-          </h2>
+          <h2 className="text-2xl font-bold mb-6">Super Admin Dashboard</h2>
 
           {/* STATS GRID */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            <StatCard
-              title="Sellers"
-              value={stats.sellers}
-              icon={<Users />}
-            />
+            <StatCard title="Sellers" value={stats.sellers} icon={<Users />} />
             <StatCard
               title="Theatres"
               value={stats.theatres}
@@ -92,11 +91,7 @@ export default function SuperAdminDashboard() {
               value={stats.screens}
               icon={<Monitor />}
             />
-            <StatCard
-              title="Shows"
-              value={stats.shows}
-              icon={<Calendar />}
-            />
+            <StatCard title="Shows" value={stats.shows} icon={<Calendar />} />
             <StatCard
               title="Bookings"
               value={stats.bookings}
@@ -111,9 +106,7 @@ export default function SuperAdminDashboard() {
 
           {/* QUICK ACTIONS */}
           <div className="mt-10">
-            <h3 className="text-lg font-semibold mb-4">
-              Quick Management
-            </h3>
+            <h3 className="text-lg font-semibold mb-4">Quick Management</h3>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <ActionCard
@@ -165,12 +158,8 @@ function ActionCard({ title, icon, onClick }) {
       onClick={onClick}
       className="bg-white p-4 rounded-lg shadow hover:shadow-md transition flex flex-col items-center justify-center group"
     >
-      <div className="text-[#f84464] mb-2">
-        {icon}
-      </div>
-      <p className="font-medium group-hover:text-[#f84464]">
-        {title}
-      </p>
+      <div className="text-[#f84464] mb-2">{icon}</div>
+      <p className="font-medium group-hover:text-[#f84464]">{title}</p>
     </button>
   );
 }

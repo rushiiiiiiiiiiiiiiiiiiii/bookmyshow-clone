@@ -26,7 +26,7 @@ export default function AdminBookings() {
   async function loadBookings() {
     try {
       const res = await axios.get(
-        "http://localhost:8000/api/admin/bookings"
+        "https://bookmyshow-backend-mzd2.onrender.com/api/admin/bookings"
       );
       if (res.data.ok) setBookings(res.data.bookings);
     } catch (err) {
@@ -93,16 +93,12 @@ export default function AdminBookings() {
         <AdminNavbar />
 
         <main className="p-6 max-w-7xl mx-auto w-full">
-          <h2 className="text-2xl font-bold mb-4">
-            Bookings (Platform)
-          </h2>
+          <h2 className="text-2xl font-bold mb-4">Bookings (Platform)</h2>
 
           {/* FILTER BAR (BookMyShow-style) */}
           <div className="bg-white p-4 rounded shadow mb-4 flex flex-wrap gap-4 items-end">
             <div>
-              <label className="text-xs text-gray-500">
-                From date
-              </label>
+              <label className="text-xs text-gray-500">From date</label>
               <input
                 type="date"
                 value={fromDate}
@@ -115,9 +111,7 @@ export default function AdminBookings() {
             </div>
 
             <div>
-              <label className="text-xs text-gray-500">
-                To date
-              </label>
+              <label className="text-xs text-gray-500">To date</label>
               <input
                 type="date"
                 value={toDate}
@@ -130,9 +124,7 @@ export default function AdminBookings() {
             </div>
 
             <div>
-              <label className="text-xs text-gray-500">
-                Theatre
-              </label>
+              <label className="text-xs text-gray-500">Theatre</label>
               <select
                 value={theatre}
                 onChange={(e) => {
@@ -190,10 +182,7 @@ export default function AdminBookings() {
 
                 <tbody>
                   {paginatedBookings.map((b) => (
-                    <tr
-                      key={b._id}
-                      className="border-t hover:bg-gray-50"
-                    >
+                    <tr key={b._id} className="border-t hover:bg-gray-50">
                       <td className="p-3 text-xs text-gray-600">
                         {b.bookingToken}
                       </td>
@@ -203,21 +192,13 @@ export default function AdminBookings() {
                       <td className="p-3">
                         {b.date} · {b.time}
                       </td>
-                      <td className="p-3">
-                        {b.seats.length}
-                      </td>
+                      <td className="p-3">{b.seats.length}</td>
                       <td className="p-3 text-xs">
                         {b.user?.name}
-                        <div className="text-gray-500">
-                          {b.user?.email}
-                        </div>
+                        <div className="text-gray-500">{b.user?.email}</div>
                       </td>
-                      <td className="p-3 font-semibold">
-                        ₹ {b.amount}
-                      </td>
-                      <td className="p-3">
-                        {statusBadge(b.status)}
-                      </td>
+                      <td className="p-3 font-semibold">₹ {b.amount}</td>
+                      <td className="p-3">{statusBadge(b.status)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -229,13 +210,9 @@ export default function AdminBookings() {
           {!loading && filteredBookings.length > 0 && (
             <div className="flex justify-between items-center mt-4 text-sm">
               <div className="text-gray-600">
-                Showing{" "}
-                {(page - 1) * PAGE_SIZE + 1}–
-                {Math.min(
-                  page * PAGE_SIZE,
-                  filteredBookings.length
-                )}{" "}
-                of {filteredBookings.length}
+                Showing {(page - 1) * PAGE_SIZE + 1}–
+                {Math.min(page * PAGE_SIZE, filteredBookings.length)} of{" "}
+                {filteredBookings.length}
               </div>
 
               <div className="flex gap-2">

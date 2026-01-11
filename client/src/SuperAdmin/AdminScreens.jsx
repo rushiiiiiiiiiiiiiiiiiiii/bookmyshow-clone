@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {
-  Monitor,
-  Speaker,
-  Video,
-  Users,
-  MapPin,
-} from "lucide-react";
+import { Monitor, Speaker, Video, Users, MapPin } from "lucide-react";
 import AdminSidebar from "../Components/AdminSidebar";
 import AdminNavbar from "../Components/Navbar";
 
@@ -24,7 +18,7 @@ export default function AdminScreens() {
     try {
       setLoading(true);
       const res = await axios.get(
-        "http://localhost:8000/api/admin/screens"
+        "https://bookmyshow-backend-mzd2.onrender.com/api/admin/screens"
       );
       setScreens(res.data.screens || []);
     } catch (err) {
@@ -77,9 +71,7 @@ export default function AdminScreens() {
         <AdminNavbar />
 
         <div className="p-6 max-w-7xl mx-auto w-full">
-          <h2 className="text-2xl font-bold mb-6">
-            Screen Management
-          </h2>
+          <h2 className="text-2xl font-bold mb-6">Screen Management</h2>
 
           {/* LOADING */}
           {loading && (
@@ -137,9 +129,7 @@ export default function AdminScreens() {
                             <h4 className="text-sm font-medium text-gray-800">
                               {s.name}
                             </h4>
-                            <div className="mt-1">
-                              {statusBadge(s.status)}
-                            </div>
+                            <div className="mt-1">{statusBadge(s.status)}</div>
                           </div>
 
                           <span className="text-xs px-2 py-1 rounded bg-gray-100 text-gray-600">

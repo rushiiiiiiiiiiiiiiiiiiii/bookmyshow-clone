@@ -11,9 +11,12 @@ export default function ProtectedRoute({ children, role }) {
   useEffect(() => {
     async function checkAuth() {
       try {
-        const res = await fetch("http://localhost:8000/auth/me", {
-          credentials: "include",
-        });
+        const res = await fetch(
+          "https://bookmyshow-backend-mzd2.onrender.com/auth/me",
+          {
+            credentials: "include",
+          }
+        );
 
         const data = await res.json();
 

@@ -3,12 +3,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import SellerNavbar from "../Components/Navbar";
 import SellerSidebar from "../Components/SellerSidebar";
-import {
-  PlusCircle,
-  Trash2,
-  X,
-  Pencil,
-} from "lucide-react";
+import { PlusCircle, Trash2, X, Pencil } from "lucide-react";
 
 axios.defaults.withCredentials = true;
 
@@ -38,8 +33,8 @@ export default function ScreenList() {
       setError("");
 
       const url = theatreId
-        ? `http://localhost:8000/api/seller/screens/${theatreId}`
-        : `http://localhost:8000/api/seller/screens`;
+        ? `https://bookmyshow-backend-mzd2.onrender.com/api/seller/screens/${theatreId}`
+        : `https://bookmyshow-backend-mzd2.onrender.com/api/seller/screens`;
 
       const res = await axios.get(url);
 
@@ -75,7 +70,7 @@ export default function ScreenList() {
 
   async function confirmDelete() {
     await axios.delete(
-      `http://localhost:8000/api/seller/screen/${selectedScreen._id}`
+      `https://bookmyshow-backend-mzd2.onrender.com/api/seller/screen/${selectedScreen._id}`
     );
     setConfirmModal(false);
     setSelectedScreen(null);
@@ -90,7 +85,7 @@ export default function ScreenList() {
 
   async function confirmUpdate() {
     await axios.put(
-      `http://localhost:8000/api/seller/screen/${editData._id}`,
+      `https://bookmyshow-backend-mzd2.onrender.com/api/seller/screen/${editData._id}`,
       editData
     );
     setEditModal(false);
