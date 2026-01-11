@@ -7,20 +7,18 @@ import {
   Monitor,
   Calendar,
   Ticket,
-  IndianRupee,
 } from "lucide-react";
 
 export default function AdminSidebar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // helper for active link
   const isActive = (path) => location.pathname.startsWith(path);
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-300 hidden md:flex flex-col">
+    <aside className="w-64 bg-white border-r border-gray-300 hidden md:flex flex-col h-screen sticky top-0">
       {/* LOGO */}
-      <div className="px-6 py-3 border-b border-gray-300">
+      <div className="px-6 py-4 border-b border-gray-300 shrink-0">
         <img
           src="https://upload.wikimedia.org/wikipedia/commons/7/75/Bookmyshow-logoid.png"
           alt="BookMyShow"
@@ -29,14 +27,14 @@ export default function AdminSidebar() {
       </div>
 
       {/* MENU */}
-      <nav className="flex-1 px-4 py-6 text-sm text-gray-700">
+      <nav className="flex-1 px-4 py-6 text-sm text-gray-700 overflow-y-auto">
         <ul className="space-y-3">
           <li
             onClick={() => navigate("/admin/dashboard")}
-            className={`cursor-pointer flex items-center gap-3 ${
+            className={`cursor-pointer flex items-center gap-3 px-2 py-2 rounded-md transition ${
               isActive("/admin/dashboard")
-                ? "text-[#f84464] font-semibold"
-                : "hover:text-[#f84464]"
+                ? "bg-pink-50 text-[#f84464] font-semibold"
+                : "hover:bg-gray-100 hover:text-[#f84464]"
             }`}
           >
             <Home size={18} />
@@ -45,10 +43,10 @@ export default function AdminSidebar() {
 
           <li
             onClick={() => navigate("/admin/sellers")}
-            className={`cursor-pointer flex items-center gap-3 ${
+            className={`cursor-pointer flex items-center gap-3 px-2 py-2 rounded-md transition ${
               isActive("/admin/sellers")
-                ? "text-[#f84464] font-semibold"
-                : "hover:text-[#f84464]"
+                ? "bg-pink-50 text-[#f84464] font-semibold"
+                : "hover:bg-gray-100 hover:text-[#f84464]"
             }`}
           >
             <Users size={18} />
@@ -57,10 +55,10 @@ export default function AdminSidebar() {
 
           <li
             onClick={() => navigate("/admin/theatres")}
-            className={`cursor-pointer flex items-center gap-3 ${
+            className={`cursor-pointer flex items-center gap-3 px-2 py-2 rounded-md transition ${
               isActive("/admin/theatres")
-                ? "text-[#f84464] font-semibold"
-                : "hover:text-[#f84464]"
+                ? "bg-pink-50 text-[#f84464] font-semibold"
+                : "hover:bg-gray-100 hover:text-[#f84464]"
             }`}
           >
             <Building2 size={18} />
@@ -69,10 +67,10 @@ export default function AdminSidebar() {
 
           <li
             onClick={() => navigate("/admin/screens")}
-            className={`cursor-pointer flex items-center gap-3 ${
+            className={`cursor-pointer flex items-center gap-3 px-2 py-2 rounded-md transition ${
               isActive("/admin/screens")
-                ? "text-[#f84464] font-semibold"
-                : "hover:text-[#f84464]"
+                ? "bg-pink-50 text-[#f84464] font-semibold"
+                : "hover:bg-gray-100 hover:text-[#f84464]"
             }`}
           >
             <Monitor size={18} />
@@ -81,10 +79,10 @@ export default function AdminSidebar() {
 
           <li
             onClick={() => navigate("/admin/shows")}
-            className={`cursor-pointer flex items-center gap-3 ${
+            className={`cursor-pointer flex items-center gap-3 px-2 py-2 rounded-md transition ${
               isActive("/admin/shows")
-                ? "text-[#f84464] font-semibold"
-                : "hover:text-[#f84464]"
+                ? "bg-pink-50 text-[#f84464] font-semibold"
+                : "hover:bg-gray-100 hover:text-[#f84464]"
             }`}
           >
             <Calendar size={18} />
@@ -93,10 +91,10 @@ export default function AdminSidebar() {
 
           <li
             onClick={() => navigate("/admin/bookings")}
-            className={`cursor-pointer flex items-center gap-3 ${
+            className={`cursor-pointer flex items-center gap-3 px-2 py-2 rounded-md transition ${
               isActive("/admin/bookings")
-                ? "text-[#f84464] font-semibold"
-                : "hover:text-[#f84464]"
+                ? "bg-pink-50 text-[#f84464] font-semibold"
+                : "hover:bg-gray-100 hover:text-[#f84464]"
             }`}
           >
             <Ticket size={18} />
@@ -104,16 +102,6 @@ export default function AdminSidebar() {
           </li>
         </ul>
       </nav>
-
-      {/* CTA */}
-      <div className="p-4 border-t">
-        <button
-          onClick={() => navigate("/admin/sellers/pending")}
-          className="w-full bg-[#f84464] hover:bg-[#e43a57] text-white py-2 rounded-lg"
-        >
-          Review Sellers
-        </button>
-      </div>
     </aside>
   );
 }

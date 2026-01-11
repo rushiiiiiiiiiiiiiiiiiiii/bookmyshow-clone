@@ -5,7 +5,7 @@ import AdminNavbar from "../Components/Navbar";
 
 axios.defaults.withCredentials = true;
 
-const PAGE_SIZE = 10; // BookMyShow usually shows 10–20 rows
+const PAGE_SIZE = 10;
 
 export default function AdminBookings() {
   const [bookings, setBookings] = useState([]);
@@ -25,9 +25,7 @@ export default function AdminBookings() {
 
   async function loadBookings() {
     try {
-      const res = await axios.get(
-        "https://bookmyshow-backend-mzd2.onrender.com/api/admin/bookings"
-      );
+      const res = await axios.get("http://localhost:8000/api/admin/bookings");
       if (res.data.ok) setBookings(res.data.bookings);
     } catch (err) {
       console.error(err);
@@ -36,7 +34,7 @@ export default function AdminBookings() {
     }
   }
 
-  // 🎯 Extract unique theatres for filter dropdown
+  // 🎯 Unique theatres for filter
   const theatres = useMemo(() => {
     const map = new Map();
     bookings.forEach((b) => {
@@ -47,19 +45,17 @@ export default function AdminBookings() {
     return Array.from(map.entries());
   }, [bookings]);
 
-  // 🎯 Apply filters (BookMyShow-style)
+  // 🎯 Apply filters
   const filteredBookings = useMemo(() => {
     return bookings.filter((b) => {
       if (theatre && b.theatre?._id !== theatre) return false;
-
       if (fromDate && b.date < fromDate) return false;
       if (toDate && b.date > toDate) return false;
-
       return true;
     });
   }, [bookings, theatre, fromDate, toDate]);
 
-  // 🎯 Pagination logic
+  // 🎯 Pagination
   const totalPages = Math.ceil(filteredBookings.length / PAGE_SIZE);
 
   const paginatedBookings = useMemo(() => {
@@ -86,17 +82,22 @@ export default function AdminBookings() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
+    <div className="min-h-screen flex bg-gray-100">
+      {/* SIDEBAR */}
       <AdminSidebar />
 
+      {/* MAIN CONTENT */}
       <div className="flex-1 flex flex-col">
         <AdminNavbar />
 
-        <main className="p-6 max-w-7xl mx-auto w-full">
-          <h2 className="text-2xl font-bold mb-4">Bookings (Platform)</h2>
+        {/* MAIN CONTENT */}
+        <main className="flex-1 p-4 md:p-6 max-w-7xl mx-auto w-full">
+          <h2 className="text-xl md:text-2xl font-bold mb-4">
+            Bookings (Platform)
+          </h2>
 
-          {/* FILTER BAR (BookMyShow-style) */}
-          <div className="bg-white p-4 rounded shadow mb-4 flex flex-wrap gap-4 items-end">
+          {/* FILTERS */}
+          <div className="bg-white p-4 rounded shadow mb-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
               <label className="text-xs text-gray-500">From date</label>
               <input
@@ -106,7 +107,7 @@ export default function AdminBookings() {
                   setPage(1);
                   setFromDate(e.target.value);
                 }}
-                className="block border rounded px-2 py-1 text-sm"
+                className="w-full border rounded px-2 py-1 text-sm"
               />
             </div>
 
@@ -119,7 +120,7 @@ export default function AdminBookings() {
                   setPage(1);
                   setToDate(e.target.value);
                 }}
-                className="block border rounded px-2 py-1 text-sm"
+                className="w-full border rounded px-2 py-1 text-sm"
               />
             </div>
 
@@ -131,7 +132,7 @@ export default function AdminBookings() {
                   setPage(1);
                   setTheatre(e.target.value);
                 }}
-                className="block border rounded px-2 py-1 text-sm min-w-[180px]"
+                className="w-full border rounded px-2 py-1 text-sm"
               >
                 <option value="">All theatres</option>
                 {theatres.map(([id, name]) => (
@@ -142,17 +143,19 @@ export default function AdminBookings() {
               </select>
             </div>
 
-            <button
-              onClick={() => {
-                setFromDate("");
-                setToDate("");
-                setTheatre("");
-                setPage(1);
-              }}
-              className="text-sm px-3 py-1 border rounded hover:bg-gray-100"
-            >
-              Reset
-            </button>
+            <div className="flex items-end">
+              <button
+                onClick={() => {
+                  setFromDate("");
+                  setToDate("");
+                  setTheatre("");
+                  setPage(1);
+                }}
+                className="w-full text-sm px-3 py-2 border rounded hover:bg-gray-100"
+              >
+                Reset
+              </button>
+            </div>
           </div>
 
           {/* LOADING */}
@@ -162,81 +165,113 @@ export default function AdminBookings() {
             </div>
           )}
 
-          {/* TABLE */}
+          {/* DESKTOP TABLE */}
           {!loading && paginatedBookings.length > 0 && (
-            <div className="bg-white rounded shadow overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th className="p-3 text-left">Booking ID</th>
-                    <th className="p-3 text-left">Movie</th>
-                    <th className="p-3 text-left">Theatre</th>
-                    <th className="p-3 text-left">Screen</th>
-                    <th className="p-3 text-left">Date & Time</th>
-                    <th className="p-3 text-left">Seats</th>
-                    <th className="p-3 text-left">User</th>
-                    <th className="p-3 text-left">Amount</th>
-                    <th className="p-3 text-left">Status</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {paginatedBookings.map((b) => (
-                    <tr key={b._id} className="border-t hover:bg-gray-50">
-                      <td className="p-3 text-xs text-gray-600">
-                        {b.bookingToken}
-                      </td>
-                      <td className="p-3 font-medium">{b.movie}</td>
-                      <td className="p-3">{b.theatre?.name}</td>
-                      <td className="p-3">{b.screen?.name}</td>
-                      <td className="p-3">
-                        {b.date} · {b.time}
-                      </td>
-                      <td className="p-3">{b.seats.length}</td>
-                      <td className="p-3 text-xs">
-                        {b.user?.name}
-                        <div className="text-gray-500">{b.user?.email}</div>
-                      </td>
-                      <td className="p-3 font-semibold">₹ {b.amount}</td>
-                      <td className="p-3">{statusBadge(b.status)}</td>
+            <>
+              <div className="hidden md:block bg-white rounded shadow overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="p-3 text-left">Booking ID</th>
+                      <th className="p-3 text-left">Movie</th>
+                      <th className="p-3 text-left">Theatre</th>
+                      <th className="p-3 text-left">Screen</th>
+                      <th className="p-3 text-left">Date & Time</th>
+                      <th className="p-3 text-left">Seats</th>
+                      <th className="p-3 text-left">User</th>
+                      <th className="p-3 text-left">Amount</th>
+                      <th className="p-3 text-left">Status</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+                  </thead>
 
-          {/* PAGINATION */}
-          {!loading && filteredBookings.length > 0 && (
-            <div className="flex justify-between items-center mt-4 text-sm">
-              <div className="text-gray-600">
-                Showing {(page - 1) * PAGE_SIZE + 1}–
-                {Math.min(page * PAGE_SIZE, filteredBookings.length)} of{" "}
-                {filteredBookings.length}
+                  <tbody>
+                    {paginatedBookings.map((b) => (
+                      <tr key={b._id} className="border-t hover:bg-gray-50">
+                        <td className="p-3 text-xs text-gray-600">
+                          {b.bookingToken}
+                        </td>
+                        <td className="p-3 font-medium">{b.movie}</td>
+                        <td className="p-3">{b.theatre?.name}</td>
+                        <td className="p-3">{b.screen?.name}</td>
+                        <td className="p-3">
+                          {b.date} · {b.time}
+                        </td>
+                        <td className="p-3">{b.seats.length}</td>
+                        <td className="p-3 text-xs">
+                          {b.user?.name}
+                          <div className="text-gray-500">{b.user?.email}</div>
+                        </td>
+                        <td className="p-3 font-semibold">₹ {b.amount}</td>
+                        <td className="p-3">{statusBadge(b.status)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
 
-              <div className="flex gap-2">
-                <button
-                  disabled={page === 1}
-                  onClick={() => setPage((p) => p - 1)}
-                  className="px-3 py-1 border rounded disabled:opacity-50"
-                >
-                  Prev
-                </button>
+              {/* MOBILE CARDS */}
+              <div className="md:hidden space-y-4">
+                {paginatedBookings.map((b) => (
+                  <div key={b._id} className="bg-white rounded shadow p-4">
+                    <div className="flex justify-between mb-2">
+                      <div className="font-semibold">{b.movie}</div>
+                      {statusBadge(b.status)}
+                    </div>
 
-                <span className="px-2 py-1">
-                  Page {page} of {totalPages}
+                    <p className="text-sm">
+                      <b>Booking:</b> {b.bookingToken}
+                    </p>
+                    <p className="text-sm">
+                      <b>Theatre:</b> {b.theatre?.name}
+                    </p>
+                    <p className="text-sm">
+                      <b>Screen:</b> {b.screen?.name}
+                    </p>
+                    <p className="text-sm">
+                      <b>Date & Time:</b> {b.date} · {b.time}
+                    </p>
+                    <p className="text-sm">
+                      <b>Seats:</b> {b.seats.length}
+                    </p>
+                    <p className="text-sm">
+                      <b>User:</b> {b.user?.name}
+                    </p>
+                    <p className="text-sm font-semibold mt-1">₹ {b.amount}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* PAGINATION */}
+              <div className="flex justify-between items-center mt-4 text-sm">
+                <span className="text-gray-600">
+                  Showing {(page - 1) * PAGE_SIZE + 1}–
+                  {Math.min(page * PAGE_SIZE, filteredBookings.length)} of{" "}
+                  {filteredBookings.length}
                 </span>
 
-                <button
-                  disabled={page === totalPages}
-                  onClick={() => setPage((p) => p + 1)}
-                  className="px-3 py-1 border rounded disabled:opacity-50"
-                >
-                  Next
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    disabled={page === 1}
+                    onClick={() => setPage((p) => p - 1)}
+                    className="px-3 py-1 border rounded disabled:opacity-50"
+                  >
+                    Prev
+                  </button>
+
+                  <span>
+                    Page {page} of {totalPages}
+                  </span>
+
+                  <button
+                    disabled={page === totalPages}
+                    onClick={() => setPage((p) => p + 1)}
+                    className="px-3 py-1 border rounded disabled:opacity-50"
+                  >
+                    Next
+                  </button>
+                </div>
               </div>
-            </div>
+            </>
           )}
         </main>
       </div>

@@ -21,9 +21,7 @@ export default function AdminTheatres() {
   async function loadTheatres() {
     try {
       setLoading(true);
-      const res = await axios.get(
-        "https://bookmyshow-backend-mzd2.onrender.com/api/admin/theatres"
-      );
+      const res = await axios.get("http://localhost:8000/api/admin/theatres");
       setTheatres(res.data.theatres || []);
     } catch (err) {
       console.error(err);
@@ -41,7 +39,7 @@ export default function AdminTheatres() {
   async function confirmAction() {
     try {
       await axios.put(
-        `https://bookmyshow-backend-mzd2.onrender.com/api/admin/theatre/${selectedTheatre._id}/status`,
+        `http://localhost:8000/api/admin/theatre/${selectedTheatre._id}/status`,
         { status: action }
       );
       setModalOpen(false);
@@ -65,7 +63,6 @@ export default function AdminTheatres() {
     );
   }
 
-  // Group theatres by seller
   const groupedBySeller = theatres.reduce((acc, t) => {
     const sellerName = t.sellerId?.name || "Unknown Seller";
     if (!acc[sellerName]) acc[sellerName] = [];
@@ -75,15 +72,21 @@ export default function AdminTheatres() {
 
   return (
     <div className="min-h-screen flex bg-gray-100">
+      {/* SIDEBAR */}
       <AdminSidebar />
+
+      {/* MAIN CONTENT */}
       <div className="flex-1 flex flex-col">
         <AdminNavbar />
 
-        <div className="p-6 max-w-7xl mx-auto w-full">
-          <h2 className="text-2xl font-bold mb-6">Theatre Management</h2>
+        {/* MAIN CONTENT */}
+        <div className="flex-1 p-4 md:p-6 max-w-7xl mx-auto w-full">
+          <h2 className="text-xl md:text-2xl font-bold mb-6">
+            Theatre Management
+          </h2>
 
           {loading && (
-            <div className="bg-white p-6 rounded shadow text-center">
+            <div className="bg-white p-6 rounded shadow text-center text-gray-500">
               Loading theatres...
             </div>
           )}
@@ -91,29 +94,31 @@ export default function AdminTheatres() {
           {!loading &&
             Object.keys(groupedBySeller).map((seller) => (
               <div key={seller} className="mb-10">
-                <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                <h3 className="text-base md:text-lg font-semibold mb-4 flex items-center gap-2">
                   <User size={16} />
                   {seller}
                 </h3>
 
-                <div className="flex gap-6 overflow-x-auto pb-2">
+                {/* RESPONSIVE GRID */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {groupedBySeller[seller].map((t) => {
                     const isBlocked = t.status === "blocked";
 
                     return (
                       <div
                         key={t._id}
-                        className={`min-w-[280px] rounded-xl shadow transition
-                          ${
-                            isBlocked
-                              ? "bg-gray-50 opacity-70"
-                              : "bg-white hover:shadow-md"
-                          }
-                        `}
+                        className={`rounded-xl shadow transition ${
+                          isBlocked
+                            ? "bg-gray-50 opacity-70"
+                            : "bg-white hover:shadow-md"
+                        }`}
                       >
-                        <div className="p-4 border-b flex justify-between">
+                        {/* HEADER */}
+                        <div className="p-4 border-b flex justify-between gap-3">
                           <div>
-                            <h4 className="font-semibold">{t.name}</h4>
+                            <h4 className="font-semibold text-sm md:text-base">
+                              {t.name}
+                            </h4>
                             <p className="text-xs text-gray-500">
                               {t.brand || "Independent Cinema"}
                             </p>
@@ -121,7 +126,8 @@ export default function AdminTheatres() {
                           {statusBadge(t.status)}
                         </div>
 
-                        <div className="p-4 space-y-2 text-sm">
+                        {/* BODY */}
+                        <div className="p-4 space-y-2 text-sm text-gray-700">
                           <div className="flex gap-2 items-center">
                             <MapPin size={14} />
                             {t.city}
@@ -135,18 +141,19 @@ export default function AdminTheatres() {
                           )}
                         </div>
 
+                        {/* ACTION */}
                         <div className="p-4 border-t">
                           {isBlocked ? (
                             <button
                               onClick={() => openModal(t, "approved")}
-                              className="w-full text-xs py-2 rounded bg-green-600 text-white hover:bg-green-700"
+                              className="w-full py-2 text-sm rounded bg-green-600 text-white hover:bg-green-700"
                             >
                               Unblock Theatre
                             </button>
                           ) : (
                             <button
                               onClick={() => openModal(t, "blocked")}
-                              className="w-full text-xs py-2 rounded bg-red-600 text-white hover:bg-red-700"
+                              className="w-full py-2 text-sm rounded bg-red-600 text-white hover:bg-red-700"
                             >
                               Block Theatre
                             </button>
@@ -163,8 +170,8 @@ export default function AdminTheatres() {
 
       {/* MODAL */}
       {modalOpen && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-[380px]">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-sm shadow-lg">
             <h3 className="font-semibold text-lg mb-2">
               {action === "blocked" ? "Block Theatre?" : "Unblock Theatre?"}
             </h3>
@@ -178,20 +185,18 @@ export default function AdminTheatres() {
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setModalOpen(false)}
-                className="px-4 py-2 text-sm rounded bg-gray-200"
+                className="px-4 py-2 text-sm rounded border"
               >
                 Cancel
               </button>
 
               <button
                 onClick={confirmAction}
-                className={`px-4 py-2 text-sm rounded text-white
-                  ${
-                    action === "blocked"
-                      ? "bg-red-600 hover:bg-red-700"
-                      : "bg-green-600 hover:bg-green-700"
-                  }
-                `}
+                className={`px-4 py-2 text-sm rounded text-white ${
+                  action === "blocked"
+                    ? "bg-red-600 hover:bg-red-700"
+                    : "bg-green-600 hover:bg-green-700"
+                }`}
               >
                 Confirm
               </button>

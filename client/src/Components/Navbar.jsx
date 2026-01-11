@@ -24,9 +24,13 @@ function CityIcon({ src, name }) {
 /* ===================================================
    ADMIN NAVBAR
 =================================================== */
+/* ===================================================
+   ADMIN NAVBAR (FIXED WITH MOBILE MENU)
+=================================================== */
 function AdminNavbar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [mobileMenu, setMobileMenu] = useState(false);
 
   const isActive = (path) =>
     location.pathname.startsWith(path)
@@ -35,12 +39,13 @@ function AdminNavbar() {
 
   function signOut() {
     document.cookie = "admin_token=; Max-Age=0; path=/;";
-    window.location.href = "/admin/login";
+    window.location.href = "/register";
   }
 
   return (
     <header className="w-full bg-white shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 flex justify-between items-center">
+        {/* LEFT */}
         <div
           onClick={() => navigate("/admin/dashboard")}
           className="cursor-pointer text-lg font-semibold"
@@ -48,6 +53,7 @@ function AdminNavbar() {
           Admin Panel
         </div>
 
+        {/* DESKTOP MENU */}
         <nav className="hidden md:flex gap-6 text-sm">
           <button
             onClick={() => navigate("/admin/dashboard")}
@@ -68,20 +74,92 @@ function AdminNavbar() {
             Theatres
           </button>
           <button
+            onClick={() => navigate("/admin/screens")}
+            className="block w-full text-left"
+          >
+            Screens
+          </button>
+          <button
             onClick={() => navigate("/admin/shows")}
             className={isActive("/admin/shows")}
           >
             Shows
           </button>
+          <button
+            onClick={() => navigate("/admin/bookings")}
+            className={isActive("/admin/bookings")}
+          >
+            Bookings
+          </button>
         </nav>
 
-        <button
-          onClick={signOut}
-          className="text-sm text-red-500 font-medium"
-        >
-          Logout
-        </button>
+        {/* RIGHT */}
+        <div className="flex items-center gap-4">
+          {/* DESKTOP LOGOUT */}
+          <button
+            onClick={signOut}
+            className="hidden md:block text-sm text-red-500 font-medium"
+          >
+            Logout
+          </button>
+
+          {/* MOBILE HAMBURGER */}
+          <button
+            onClick={() => setMobileMenu(!mobileMenu)}
+            className="md:hidden"
+          >
+            {mobileMenu ? <X /> : <Menu />}
+          </button>
+        </div>
       </div>
+
+      {/* MOBILE ADMIN MENU */}
+      {mobileMenu && (
+        <div className="md:hidden bg-white border-t p-4 space-y-3">
+          <button
+            onClick={() => navigate("/admin/dashboard")}
+            className="block w-full text-left"
+          >
+            Dashboard
+          </button>
+          <button
+            onClick={() => navigate("/admin/sellers")}
+            className="block w-full text-left"
+          >
+            Sellers
+          </button>
+          <button
+            onClick={() => navigate("/admin/theatres")}
+            className="block w-full text-left"
+          >
+            Theatres
+          </button>
+          <button
+            onClick={() => navigate("/admin/screens")}
+            className="block w-full text-left"
+          >
+            Screens
+          </button>
+          <button
+            onClick={() => navigate("/admin/shows")}
+            className="block w-full text-left"
+          >
+            Shows
+          </button>
+          <button
+            onClick={() => navigate("/admin/bookings")}
+            className="block w-full text-left"
+          >
+            Bookings
+          </button>
+          <button
+            onClick={signOut}
+            className="block w-full text-left text-red-500"
+          >
+            Logout
+          </button>
+        </div>
+      )}
     </header>
   );
 }
@@ -96,8 +174,12 @@ function SellerNavbar() {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
 
-  function signOut() {
-    document.cookie = "seller_token=; Max-Age=0; path=/;";
+  async function signOut() {
+    await fetch("http://localhost:8000/api/seller/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+
     window.location.href = "/seller/signin";
   }
 
@@ -177,12 +259,6 @@ function SellerNavbar() {
                 >
                   <LogOut size={14} />
                   Logout
-                </button>
-                <button
-                  onClick={() => navigate("/profile")}
-                  className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                >
-                  Your booking
                 </button>
               </div>
             )}
@@ -605,8 +681,17 @@ function UserNavbar({ movies = [] }) {
       </div>
 
       {/* MOBILE USER MENU */}
+      {/* MOBILE USER MENU */}
       {mobileMenu && (
-        <div className="md:hidden bg-white shadow border-t p-4 space-y-3">
+        <div className="md:hidden bg-white shadow border-t p-4 space-y-4">
+          {/* 🔴 PRIMARY CTA – LIST YOUR SHOW (MOBILE) */}
+          <button
+            onClick={() => navigate("/seller/signin")}
+            className="w-full bg-[#f84464] text-white py-2 rounded-md font-medium"
+          >
+            List Your Show
+          </button>
+
           {/* CITY */}
           <div className="border-b pb-2">
             <p className="text-sm font-semibold mb-1">Select City</p>
@@ -697,12 +782,22 @@ function UserNavbar({ movies = [] }) {
 /* ===================================================
    MAIN EXPORT
 =================================================== */
-export default function Navbar({ movies }) {
-  const isAdmin = document.cookie.includes("admin_token=");
-  const isSeller = document.cookie.includes("seller_token=");
+/* ===================================================
+   MAIN EXPORT (FIXED)
+=================================================== */
 
-  if (isAdmin) return <AdminNavbar />;
-  if (isSeller) return <SellerNavbar />;
+export default function Navbar({ movies }) {
+  const location = useLocation();
+  const path = location.pathname;
+
+  // ✅ Route-based navbar rendering
+  if (path.startsWith("/admin")) {
+    return <AdminNavbar />;
+  }
+
+  if (path.startsWith("/seller")) {
+    return <SellerNavbar />;
+  }
+
   return <UserNavbar movies={movies} />;
 }
-

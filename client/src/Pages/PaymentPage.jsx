@@ -42,7 +42,7 @@ export default function PaymentPage() {
       setLoading(true);
 
       const res = await axios.post(
-        "https://bookmyshow-backend-mzd2.onrender.com/api/booking",
+        "http://localhost:8000/api/booking",
         {
           showId: show._id,
           seats,

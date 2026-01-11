@@ -40,6 +40,7 @@ import AdminTheatres from "./SuperAdmin/AdminTheatres";
 import AdminScreens from "./SuperAdmin/AdminScreens";
 import AdminShows from "./SuperAdmin/AdminShows";
 import AdminBookings from "./SuperAdmin/AdminBookings";
+import RoleGate from "./Components/RoleGate";
 // import AdminRevenue from "./SuperAdmin/AdminRevenue";
 
 function App() {
@@ -60,6 +61,7 @@ function App() {
       />
 
       <BrowserRouter>
+      <RoleGate>
         <Routes>
           {/* ROOT */}
           <Route path="/" element={<RootRouter />} />
@@ -76,49 +78,49 @@ function App() {
           <Route
             path="/admin/dashboard"
             element={
-              <ProtectedRoute role="admin">
+              // <ProtectedRoute role="admin">
                 <SuperAdminDashboard />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             }
           />
           <Route
             path="/admin/sellers"
             element={
-              <ProtectedRoute role="admin">
+              // <ProtectedRoute role="admin">
                 <AdminSellers />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             }
           />
           <Route
             path="/admin/theatres"
             element={
-              <ProtectedRoute role="admin">
+              // <ProtectedRoute role="admin">
                 <AdminTheatres />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             }
           />
           <Route
             path="/admin/screens"
             element={
-              <ProtectedRoute role="admin">
+              // <ProtectedRoute role="admin">
                 <AdminScreens />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             }
           />
           <Route
             path="/admin/shows"
             element={
-              <ProtectedRoute role="admin">
+              // <ProtectedRoute role="admin">
                 <AdminShows />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             }
           />
           <Route
             path="/admin/bookings"
             element={
-              <ProtectedRoute role="admin">
+              // <ProtectedRoute role="admin">
                 <AdminBookings />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             }
           />
 
@@ -230,6 +232,7 @@ function App() {
             }
           />
         </Routes>
+        </RoleGate>
       </BrowserRouter>
     </>
   );

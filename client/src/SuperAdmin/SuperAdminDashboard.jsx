@@ -37,21 +37,11 @@ export default function SuperAdminDashboard() {
     try {
       const [sellersRes, theatresRes, screensRes, showsRes, bookingsRes] =
         await Promise.all([
-          axios.get(
-            "https://bookmyshow-backend-mzd2.onrender.com/api/admin/sellers"
-          ),
-          axios.get(
-            "https://bookmyshow-backend-mzd2.onrender.com/api/admin/theatres"
-          ),
-          axios.get(
-            "https://bookmyshow-backend-mzd2.onrender.com/api/admin/screens"
-          ),
-          axios.get(
-            "https://bookmyshow-backend-mzd2.onrender.com/api/admin/shows"
-          ),
-          axios.get(
-            "https://bookmyshow-backend-mzd2.onrender.com/api/admin/bookings"
-          ),
+          axios.get("http://localhost:8000/api/admin/sellers"),
+          axios.get("http://localhost:8000/api/admin/theatres"),
+          axios.get("http://localhost:8000/api/admin/screens"),
+          axios.get("http://localhost:8000/api/admin/shows"),
+          axios.get("http://localhost:8000/api/admin/bookings"),
         ]);
 
       setStats({
@@ -118,6 +108,11 @@ export default function SuperAdminDashboard() {
                 title="View Theatres"
                 icon={<Building2 />}
                 onClick={() => navigate("/admin/theatres")}
+              />
+              <ActionCard
+                title="View Screens"
+                icon={<Building2 />}
+                onClick={() => navigate("/admin/screens")}
               />
               <ActionCard
                 title="View Shows"

@@ -40,7 +40,7 @@ exports.sendOtp = async (req, res) => {
 exports.verifyOtp = async (req, res) => {
   try {
     const { email, otp } = req.body;
-    console.log(email,otp)
+    console.log(email, otp);
 
     if (!email || !otp)
       return res
@@ -87,7 +87,7 @@ exports.verifyOtp = async (req, res) => {
         // secure: false,
         // sameSite: "lax",
         // path: "/",
-        // // partitioned: true,
+        // partitioned: true,
         // maxAge: 7 * 24 * 60 * 60 * 1000,
       })
       .json({ ok: true, isNewSeller });
@@ -124,7 +124,6 @@ exports.onboard = async (req, res) => {
   }
 };
 
-
 exports.getMe = async (req, res) => {
   try {
     const seller = await Seller.findById(req.user.id);
@@ -159,5 +158,35 @@ exports.getSellerBookings = async (req, res) => {
   } catch (err) {
     console.error("SELLER BOOKINGS ERROR:", err);
     res.status(500).json({ ok: false, message: "Failed to load bookings" });
+  }
+};
+
+// Controllers/SellerAuthController.js
+
+exports.sellerLogout = async (req, res) => {
+  try {
+    res.clearCookie("seller_token", {
+      // httpOnly: true,
+      // secure: false,
+      // sameSite: "lax",
+      // path: "/",
+
+      //production
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      path: "/",
+    });
+
+    return res.status(200).json({
+      ok: true,
+      message: "Seller logged out successfully",
+    });
+  } catch (error) {
+    console.error("Logout error:", error);
+    return res.status(500).json({
+      ok: false,
+      message: "Logout failed",
+    });
   }
 };

@@ -13,11 +13,11 @@ export default function ShowsList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // ✅ Delete Modal
+  // Delete modal
   const [showModal, setShowModal] = useState(false);
   const [selectedShow, setSelectedShow] = useState(null);
 
-  // ✅ Edit Modal
+  // Edit modal
   const [editModal, setEditModal] = useState(false);
   const [editData, setEditData] = useState({});
 
@@ -29,11 +29,10 @@ export default function ShowsList() {
     try {
       setLoading(true);
       const url = theatreId
-        ? `https://bookmyshow-backend-mzd2.onrender.com/api/seller/shows/${theatreId}`
-        : `https://bookmyshow-backend-mzd2.onrender.com/api/seller/shows`;
+        ? `http://localhost:8000/api/seller/shows/${theatreId}`
+        : `http://localhost:8000/api/seller/shows`;
 
       const res = await axios.get(url);
-
       if (res.data.ok) setShows(res.data.shows);
       else setError("Failed to load shows");
     } catch (err) {
@@ -44,33 +43,29 @@ export default function ShowsList() {
     }
   }
 
-  // ✅ OPEN DELETE MODAL
   function openCancelModal(show) {
     setSelectedShow(show);
     setShowModal(true);
   }
 
-  // ✅ DELETE CONFIRMED
   async function confirmCancel() {
     await axios.delete(
-      `https://bookmyshow-backend-mzd2.onrender.com/api/seller/show/${selectedShow._id}`
+      `http://localhost:8000/api/seller/show/${selectedShow._id}`
     );
     setShowModal(false);
     setSelectedShow(null);
     loadShows();
   }
 
-  // ✅ OPEN EDIT MODAL
   function openEditModal(show) {
     setEditData({ ...show });
     setEditModal(true);
   }
 
-  // ✅ UPDATE CONFIRMED
   async function confirmUpdate() {
     try {
       await axios.put(
-        `https://bookmyshow-backend-mzd2.onrender.com/api/seller/show/${editData._id}`,
+        `http://localhost:8000/api/seller/show/${editData._id}`,
         {
           movie: editData.movie,
           time: editData.time,
@@ -81,22 +76,19 @@ export default function ShowsList() {
           format: editData.format,
         }
       );
-
       setEditModal(false);
       loadShows();
-    } catch (err) {
-      alert("Update failed. There may be a conflict or invalid time.");
+    } catch {
+      alert("Update failed.");
     }
   }
 
-  // ✅ Badge
   function badge(status) {
     const map = {
       active: "bg-green-100 text-green-700",
       cancelled: "bg-red-100 text-red-600",
       inactive: "bg-gray-200 text-gray-600",
     };
-
     return (
       <span className={`text-xs px-2 py-1 rounded ${map[status]}`}>
         {(status || "active").toUpperCase()}
@@ -105,116 +97,145 @@ export default function ShowsList() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex">
-      <SellerSidebar />
+    <div className="min-h-screen bg-gray-100">
+      <SellerNavbar />
 
-      <div className="flex-1 flex flex-col">
-        <SellerNavbar />
+      <div className="flex">
+        {/* SIDEBAR DESKTOP ONLY */}
+        <div className="hidden lg:block">
+          <SellerSidebar />
+        </div>
 
-        <main className="p-6 max-w-7xl mx-auto w-full">
-          <h2 className="text-2xl font-bold mb-6">
+        <main className="flex-1 p-4 md:p-6 max-w-7xl mx-auto w-full">
+          <h2 className="text-xl md:text-2xl font-bold mb-6">
             {theatreId ? "Theatre Shows" : "All Shows"}
           </h2>
 
-          {/* LOADING */}
           {loading && (
-            <div className="bg-white p-8 rounded shadow text-center">
-              <p className="text-gray-400">Loading shows...</p>
+            <div className="bg-white p-6 rounded shadow text-center text-gray-400">
+              Loading shows...
             </div>
           )}
 
-          {/* ERROR */}
           {error && !loading && (
-            <div className="bg-white p-8 rounded shadow text-center">
-              <p className="text-red-500">{error}</p>
+            <div className="bg-white p-6 rounded shadow text-center text-red-500">
+              {error}
             </div>
           )}
 
-          {/* EMPTY */}
           {!loading && shows.length === 0 && !error && (
-            <div className="bg-white p-8 rounded shadow text-center">
-              <p className="text-gray-500">No shows scheduled.</p>
+            <div className="bg-white p-6 rounded shadow text-center text-gray-500">
+              No shows scheduled.
             </div>
           )}
 
-          {/* TABLE */}
+          {/* DESKTOP TABLE */}
           {!loading && shows.length > 0 && (
-            <div className="bg-white shadow rounded overflow-x-auto">
-              <table className="w-full text-sm border-collapse">
-                <thead className="bg-gray-100">
-                  <tr className="text-left">
-                    <th className="p-3">Movie</th>
-                    <th className="p-3">Lang / Format</th>
-                    <th className="p-3">Date</th>
-                    <th className="p-3">Time</th>
-                    <th className="p-3">Theatre</th>
-                    <th className="p-3">Screen</th>
-                    <th className="p-3">Price</th>
-                    <th className="p-3">Status</th>
-                    <th className="p-3 text-center">Action</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {shows.map((s) => (
-                    <tr key={s._id} className="border-t hover:bg-gray-50">
-                      <td className="p-3">{s.movie}</td>
-
-                      <td className="p-3">
-                        {s.language} / {s.format}
-                        {s.isSubtitled && (
-                          <span className="ml-1 text-xs text-blue-600">
-                            (Sub)
-                          </span>
-                        )}
-                      </td>
-
-                      <td className="p-3">{s.date}</td>
-
-                      <td className="p-3">
-                        {s.time}
-                        {s.endTime && ` - ${s.endTime}`}
-                      </td>
-
-                      <td className="p-3">{s.theatreId?.name}</td>
-
-                      <td className="p-3">{s.screenId?.name}</td>
-
-                      <td className="p-3 font-medium">₹{s.price}</td>
-
-                      <td className="p-3">{badge(s.status)}</td>
-
-                      <td className="p-3 flex justify-center gap-3">
-                        {/* EDIT */}
-                        <button
-                          onClick={() => openEditModal(s)}
-                          className="text-blue-600 hover:text-blue-800"
-                        >
-                          <Pencil size={16} />
-                        </button>
-
-                        {/* DELETE */}
-                        {s.status !== "cancelled" && (
-                          <button
-                            onClick={() => openCancelModal(s)}
-                            className="text-red-600 hover:text-red-800"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        )}
-                      </td>
+            <>
+              <div className="hidden md:block bg-white shadow rounded overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="p-3">Movie</th>
+                      <th className="p-3">Lang / Format</th>
+                      <th className="p-3">Date</th>
+                      <th className="p-3">Time</th>
+                      <th className="p-3">Theatre</th>
+                      <th className="p-3">Screen</th>
+                      <th className="p-3">Price</th>
+                      <th className="p-3">Status</th>
+                      <th className="p-3 text-center">Action</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {shows.map((s) => (
+                      <tr key={s._id} className="border-t hover:bg-gray-50">
+                        <td className="p-3">{s.movie}</td>
+                        <td className="p-3">
+                          {s.language} / {s.format}
+                          {s.isSubtitled && (
+                            <span className="ml-1 text-xs text-blue-600">
+                              (Sub)
+                            </span>
+                          )}
+                        </td>
+                        <td className="p-3">{s.date}</td>
+                        <td className="p-3">
+                          {s.time}
+                          {s.endTime && ` - ${s.endTime}`}
+                        </td>
+                        <td className="p-3">{s.theatreId?.name}</td>
+                        <td className="p-3">{s.screenId?.name}</td>
+                        <td className="p-3 font-medium">₹{s.price}</td>
+                        <td className="p-3">{badge(s.status)}</td>
+                        <td className="p-3 flex justify-center gap-3">
+                          <button
+                            onClick={() => openEditModal(s)}
+                            className="text-blue-600"
+                          >
+                            <Pencil size={16} />
+                          </button>
+                          {s.status !== "cancelled" && (
+                            <button
+                              onClick={() => openCancelModal(s)}
+                              className="text-red-600"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* MOBILE CARDS */}
+              <div className="md:hidden space-y-4">
+                {shows.map((s) => (
+                  <div key={s._id} className="bg-white p-4 rounded shadow">
+                    <div className="flex justify-between mb-2">
+                      <p className="font-semibold">{s.movie}</p>
+                      {badge(s.status)}
+                    </div>
+                    <p className="text-sm">{s.language} / {s.format}</p>
+                    <p className="text-sm mt-1">
+                      <b>Date:</b> {s.date}
+                    </p>
+                    <p className="text-sm">
+                      <b>Time:</b> {s.time}
+                    </p>
+                    <p className="text-sm">
+                      <b>Price:</b> ₹{s.price}
+                    </p>
+
+                    <div className="flex justify-end gap-4 mt-3">
+                      <button
+                        onClick={() => openEditModal(s)}
+                        className="text-blue-600"
+                      >
+                        <Pencil size={16} />
+                      </button>
+                      {s.status !== "cancelled" && (
+                        <button
+                          onClick={() => openCancelModal(s)}
+                          className="text-red-600"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </main>
       </div>
 
-      {/* ✅ DELETE MODAL */}
+      {/* DELETE MODAL */}
       {showModal && selectedShow && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
             <div className="flex justify-between">
               <h3 className="font-semibold">Cancel Show?</h3>
@@ -243,9 +264,9 @@ export default function ShowsList() {
         </div>
       )}
 
-      {/* ✅ EDIT MODAL */}
+      {/* EDIT MODAL */}
       {editModal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-lg shadow-xl max-w-lg w-full p-6">
             <div className="flex justify-between">
               <h3 className="font-semibold">Edit Show</h3>
@@ -260,7 +281,6 @@ export default function ShowsList() {
               onChange={(e) =>
                 setEditData({ ...editData, movie: e.target.value })
               }
-              placeholder="Movie name"
             />
 
             <input
@@ -277,9 +297,11 @@ export default function ShowsList() {
               className="border p-2 w-full mt-3"
               value={editData.durationMinutes || ""}
               onChange={(e) =>
-                setEditData({ ...editData, durationMinutes: e.target.value })
+                setEditData({
+                  ...editData,
+                  durationMinutes: e.target.value,
+                })
               }
-              placeholder="Duration (minutes)"
             />
 
             <input
@@ -289,7 +311,6 @@ export default function ShowsList() {
               onChange={(e) =>
                 setEditData({ ...editData, price: e.target.value })
               }
-              placeholder="Ticket price"
             />
 
             <select
