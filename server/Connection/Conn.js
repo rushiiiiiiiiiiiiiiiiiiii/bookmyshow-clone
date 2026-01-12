@@ -1,18 +1,13 @@
 const mongoose = require("mongoose");
+require('dotenv').config()
+console.log("Using DB:", process.env.MONGO_URL);
 
 const Conn = async () => {
   try {
-    const mongoUrl = process.env.MONGO_URL;
-
-    if (!mongoUrl) {
-      throw new Error("MONGO_URL is missing in environment variables");
-    }
-
-    await mongoose.connect(mongoUrl);
-    console.log("MongoDB connected successfully");
+    const conn = await mongoose.connect(process.env.MongoURL);
+    console.log("Mongodb connected succesfully");
   } catch (err) {
-    console.error("MongoDB connection failed:", err.message);
+    console.log(err);
   }
 };
-
 module.exports = Conn;
