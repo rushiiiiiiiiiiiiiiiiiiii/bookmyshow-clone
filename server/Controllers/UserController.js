@@ -73,29 +73,35 @@ exports.verifyOtp = async (req, res) => {
     // ✅ IMPORTANT: role-based cookie
     const cookieName = user.role === "admin" ? "admin_token" : "token";
 
+    // production
     res.cookie(cookieName, token, {
-      //production
       httpOnly: true,
       secure: true,
       sameSite: "none",
       path: "/",
-      partitioned: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-
-      //local
-      // httpOnly: true,
-      // secure: false,
-      // sameSite: "lax",
-      // path: "/",
       // partitioned: true,
-      // maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-
     res.json({
       ok: true,
       role: user.role,
       isNewUser,
     });
+
+    //local
+    // res.cookie(cookieName, token, {
+    //   httpOnly: true,
+    //   secure: false,
+    //   sameSite: "lax",
+    //   path: "/",
+    //   partitioned: true,
+    //   maxAge: 7 * 24 * 60 * 60 * 1000,
+    // });
+    // res.json({
+    //       ok: true,
+    //       role: user.role,
+    //       isNewUser,
+    //     });
   } catch (err) {
     console.error("VERIFY OTP ERROR:", err);
     res.status(500).json({ ok: false, message: "Error verifying OTP" });

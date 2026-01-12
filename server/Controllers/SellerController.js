@@ -72,25 +72,30 @@ exports.verifyOtp = async (req, res) => {
       { expiresIn: "7d" }
     );
 
+    //production
     res
-      .cookie("seller_token", token, {
-        //production
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        path: "/",
-        partitioned: true,
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+    .cookie("seller_token", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+    // partitioned: true,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    })
+    .json({ ok: true, isNewSeller });
 
-        //local
-        // httpOnly: true,
-        // secure: false,
-        // sameSite: "lax",
-        // path: "/",
-        // partitioned: true,
-        // maxAge: 7 * 24 * 60 * 60 * 1000,
-      })
-      .json({ ok: true, isNewSeller });
+    //local
+    // res
+    //   .cookie("seller_token", token, {
+    //     httpOnly: true,
+    //     secure: false,
+    //     sameSite: "lax",
+    //     path: "/",
+    //     // partitioned: true,
+    //     maxAge: 7 * 24 * 60 * 60 * 1000,
+    //   })
+    //   .json({ ok: true, isNewSeller });
+
   } catch (err) {
     console.error("VERIFY OTP ERROR:", err);
     return res.status(500).json({ ok: false, message: "Error verifying OTP" });
