@@ -28,7 +28,7 @@ export default function UserShows() {
   ========================= */
   async function loadShows() {
     const res = await axios.get(
-      `http://localhost:8000/api/user/shows?city=${city}`
+      `https://bookmyshow-backend-mzd2.onrender.com/api/user/shows?city=${city}`
     );
     if (res.data.ok) setShows(res.data.shows);
   }
@@ -38,7 +38,7 @@ export default function UserShows() {
   ========================= */
   async function loadTheatres() {
     const res = await axios.get(
-      `http://localhost:8000/api/user/theatres?city=${city}`
+      `https://bookmyshow-backend-mzd2.onrender.com/api/user/theatres?city=${city}`
     );
     if (res.data.ok) setTheatres(res.data.theatres);
   }

@@ -175,10 +175,13 @@ function SellerNavbar() {
   const [openSearch, setOpenSearch] = useState(false);
 
   async function signOut() {
-    await fetch("http://localhost:8000/api/seller/logout", {
-      method: "POST",
-      credentials: "include",
-    });
+    await fetch(
+      "https://bookmyshow-backend-mzd2.onrender.com/api/seller/logout",
+      {
+        method: "POST",
+        credentials: "include",
+      }
+    );
 
     window.location.href = "/seller/signin";
   }

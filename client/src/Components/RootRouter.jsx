@@ -15,7 +15,9 @@ export default function RootRouter() {
     async function checkAuth() {
       try {
         if (document.cookie.includes("seller_token=")) {
-          const res = await axios.get("http://localhost:8000/api/seller/me");
+          const res = await axios.get(
+            "https://bookmyshow-backend-mzd2.onrender.com/api/seller/me"
+          );
 
           if (res.data.ok && res.data.seller) {
             setRole("seller");

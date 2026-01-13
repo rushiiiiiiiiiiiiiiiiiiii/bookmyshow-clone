@@ -10,9 +10,12 @@ export default function SellerProtectedRoute({ children }) {
   useEffect(() => {
     async function checkAuth() {
       try {
-        const res = await fetch("http://localhost:8000/api/seller/me", {
-          credentials: "include",
-        });
+        const res = await fetch(
+          "https://bookmyshow-backend-mzd2.onrender.com/api/seller/me",
+          {
+            credentials: "include",
+          }
+        );
 
         const data = await res.json();
 

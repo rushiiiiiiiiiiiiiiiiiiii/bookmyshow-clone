@@ -18,7 +18,7 @@ export default function MoviePage() {
   useEffect(() => {
     async function load() {
       const res = await axios.get(
-        `http://localhost:8000/api/shows/movie?movie=${encodeURIComponent(
+        `https://bookmyshow-backend-mzd2.onrender.com/api/shows/movie?movie=${encodeURIComponent(
           movieName
         )}`
       );

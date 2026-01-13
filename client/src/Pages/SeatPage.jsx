@@ -79,14 +79,16 @@ export default function SeatPage() {
   async function loadSeatData() {
     try {
       // ✅ MOVIE DETAILS
-      const showRes = await axios.get(`http://localhost:8000/api/shows/${id}`);
+      const showRes = await axios.get(
+        `https://bookmyshow-backend-mzd2.onrender.com/api/shows/${id}`
+      );
       if (showRes.data.ok) {
         setShow(showRes.data.show);
       }
 
       // ✅ SEAT DATA (booked + locked)
       const seatRes = await axios.get(
-        `http://localhost:8000/api/user/seats/${id}`
+        `https://bookmyshow-backend-mzd2.onrender.com/api/user/seats/${id}`
       );
 
       if (seatRes.data.ok) {
@@ -156,7 +158,7 @@ export default function SeatPage() {
 
     try {
       const res = await axios.post(
-        "http://localhost:8000/api/lock-seats",
+        "https://bookmyshow-backend-mzd2.onrender.com/api/lock-seats",
         {
           showId: id,
           seats: newSelected,
@@ -413,14 +415,14 @@ export default function SeatPage() {
 //       try {
 //         // ✅ GET SHOW
 //         const showRes = await axios.get(
-//           `http://localhost:8000/api/shows/${id}`
+//           `https://bookmyshow-backend-mzd2.onrender.com/api/shows/${id}`
 //         );
 
 //         if (showRes.data.ok) setShow(showRes.data.show);
 
 //         // ✅ GET SEATS
 //         const seatRes = await axios.get(
-//           `http://localhost:8000/api/user/seats/${id}`
+//           `https://bookmyshow-backend-mzd2.onrender.com/api/user/seats/${id}`
 //         );
 
 //         if (seatRes.data.ok) {

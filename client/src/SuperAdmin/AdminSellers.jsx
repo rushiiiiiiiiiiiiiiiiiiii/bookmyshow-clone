@@ -20,7 +20,9 @@ export default function AdminSellers() {
   async function loadSellers() {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:8000/api/admin/sellers");
+      const res = await axios.get(
+        "https://bookmyshow-backend-mzd2.onrender.com/api/admin/sellers"
+      );
       setSellers(res.data.sellers || []);
     } catch (err) {
       console.error(err);
@@ -44,7 +46,7 @@ export default function AdminSellers() {
   async function confirmStatusChange() {
     try {
       await axios.put(
-        `http://localhost:8000/api/admin/seller/${selectedSeller._id}/status`,
+        `https://bookmyshow-backend-mzd2.onrender.com/api/admin/seller/${selectedSeller._id}/status`,
         { status: nextStatus }
       );
       closeModal();
@@ -115,10 +117,7 @@ export default function AdminSellers() {
 
                   <tbody>
                     {sellers.map((s) => (
-                      <tr
-                        key={s._id}
-                        className="border-t hover:bg-gray-50"
-                      >
+                      <tr key={s._id} className="border-t hover:bg-gray-50">
                         <td className="p-4">
                           <div className="font-semibold">
                             {s.businessName || "-"}
@@ -130,9 +129,7 @@ export default function AdminSellers() {
 
                         <td className="p-4">
                           <div>{s.name}</div>
-                          <div className="text-xs text-gray-500">
-                            {s.email}
-                          </div>
+                          <div className="text-xs text-gray-500">{s.email}</div>
                         </td>
 
                         <td className="p-4">
@@ -151,18 +148,14 @@ export default function AdminSellers() {
                         <td className="p-4 text-center">
                           {s.status === "blocked" ? (
                             <button
-                              onClick={() =>
-                                openModal(s, "approved")
-                              }
+                              onClick={() => openModal(s, "approved")}
                               className="px-4 py-1 text-xs rounded bg-green-600 text-white hover:bg-green-700"
                             >
                               Unblock
                             </button>
                           ) : (
                             <button
-                              onClick={() =>
-                                openModal(s, "blocked")
-                              }
+                              onClick={() => openModal(s, "blocked")}
                               className="px-4 py-1 text-xs rounded bg-red-600 text-white hover:bg-red-700"
                             >
                               Block
@@ -178,15 +171,10 @@ export default function AdminSellers() {
               {/* MOBILE CARDS */}
               <div className="md:hidden space-y-4">
                 {sellers.map((s) => (
-                  <div
-                    key={s._id}
-                    className="bg-white rounded-lg shadow p-4"
-                  >
+                  <div key={s._id} className="bg-white rounded-lg shadow p-4">
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <p className="font-semibold">
-                          {s.businessName || "-"}
-                        </p>
+                        <p className="font-semibold">{s.businessName || "-"}</p>
                         <p className="text-xs text-gray-500">
                           {s.businessType}
                         </p>
@@ -195,8 +183,7 @@ export default function AdminSellers() {
                     </div>
 
                     <p className="text-sm">
-                      <span className="font-medium">Owner:</span>{" "}
-                      {s.name}
+                      <span className="font-medium">Owner:</span> {s.name}
                     </p>
                     <p className="text-sm text-gray-500">{s.email}</p>
 
@@ -213,18 +200,14 @@ export default function AdminSellers() {
                     <div className="mt-3">
                       {s.status === "blocked" ? (
                         <button
-                          onClick={() =>
-                            openModal(s, "approved")
-                          }
+                          onClick={() => openModal(s, "approved")}
                           className="w-full py-2 text-sm rounded bg-green-600 text-white"
                         >
                           Unblock
                         </button>
                       ) : (
                         <button
-                          onClick={() =>
-                            openModal(s, "blocked")
-                          }
+                          onClick={() => openModal(s, "blocked")}
                           className="w-full py-2 text-sm rounded bg-red-600 text-white"
                         >
                           Block
@@ -243,16 +226,12 @@ export default function AdminSellers() {
       {modalOpen && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-lg w-full max-w-md p-6 shadow-lg">
-            <h3 className="text-lg font-semibold mb-2">
-              Confirm Action
-            </h3>
+            <h3 className="text-lg font-semibold mb-2">Confirm Action</h3>
 
             <p className="text-sm text-gray-600 mb-6">
               Are you sure you want to{" "}
               <span className="font-semibold">
-                {nextStatus === "blocked"
-                  ? "BLOCK"
-                  : "UNBLOCK"}
+                {nextStatus === "blocked" ? "BLOCK" : "UNBLOCK"}
               </span>{" "}
               seller{" "}
               <span className="font-semibold">
@@ -272,9 +251,7 @@ export default function AdminSellers() {
               <button
                 onClick={confirmStatusChange}
                 className={`px-4 py-2 text-sm rounded text-white ${
-                  nextStatus === "blocked"
-                    ? "bg-red-600"
-                    : "bg-green-600"
+                  nextStatus === "blocked" ? "bg-red-600" : "bg-green-600"
                 }`}
               >
                 Confirm

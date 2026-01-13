@@ -56,7 +56,14 @@ export default function AddTheatre() {
   async function saveTheatre() {
     const { name, city, pincode, address, contactEmail, contactPhone } = form;
 
-    if (!name || !city || !pincode || !address || !contactEmail || !contactPhone) {
+    if (
+      !name ||
+      !city ||
+      !pincode ||
+      !address ||
+      !contactEmail ||
+      !contactPhone
+    ) {
       toast.error("All required fields must be filled");
       return;
     }
@@ -73,7 +80,7 @@ export default function AddTheatre() {
       };
 
       const res = await axios.post(
-        "http://localhost:8000/api/seller/theatre",
+        "https://bookmyshow-backend-mzd2.onrender.com/api/seller/theatre",
         payload
       );
 

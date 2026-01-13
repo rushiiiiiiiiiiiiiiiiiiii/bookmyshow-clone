@@ -14,7 +14,7 @@ export default function SellerLogin() {
     try {
       setLoading(true);
       const res = await axios.post(
-        "http://localhost:8000/api/seller/send-otp",
+        "https://bookmyshow-backend-mzd2.onrender.com/api/seller/send-otp",
         { email }
       );
       setLoading(false);
@@ -34,7 +34,7 @@ export default function SellerLogin() {
       setLoading(true);
 
       const res = await axios.post(
-        "http://localhost:8000/api/seller/verify-otp",
+        "https://bookmyshow-backend-mzd2.onrender.com/api/seller/verify-otp",
         { email, otp },
         { withCredentials: true } // ⬅ VERY IMPORTANT
       );

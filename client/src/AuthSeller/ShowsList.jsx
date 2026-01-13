@@ -29,8 +29,8 @@ export default function ShowsList() {
     try {
       setLoading(true);
       const url = theatreId
-        ? `http://localhost:8000/api/seller/shows/${theatreId}`
-        : `http://localhost:8000/api/seller/shows`;
+        ? `https://bookmyshow-backend-mzd2.onrender.com/api/seller/shows/${theatreId}`
+        : `https://bookmyshow-backend-mzd2.onrender.com/api/seller/shows`;
 
       const res = await axios.get(url);
       if (res.data.ok) setShows(res.data.shows);
@@ -50,7 +50,7 @@ export default function ShowsList() {
 
   async function confirmCancel() {
     await axios.delete(
-      `http://localhost:8000/api/seller/show/${selectedShow._id}`
+      `https://bookmyshow-backend-mzd2.onrender.com/api/seller/show/${selectedShow._id}`
     );
     setShowModal(false);
     setSelectedShow(null);
@@ -65,7 +65,7 @@ export default function ShowsList() {
   async function confirmUpdate() {
     try {
       await axios.put(
-        `http://localhost:8000/api/seller/show/${editData._id}`,
+        `https://bookmyshow-backend-mzd2.onrender.com/api/seller/show/${editData._id}`,
         {
           movie: editData.movie,
           time: editData.time,
@@ -198,7 +198,9 @@ export default function ShowsList() {
                       <p className="font-semibold">{s.movie}</p>
                       {badge(s.status)}
                     </div>
-                    <p className="text-sm">{s.language} / {s.format}</p>
+                    <p className="text-sm">
+                      {s.language} / {s.format}
+                    </p>
                     <p className="text-sm mt-1">
                       <b>Date:</b> {s.date}
                     </p>
