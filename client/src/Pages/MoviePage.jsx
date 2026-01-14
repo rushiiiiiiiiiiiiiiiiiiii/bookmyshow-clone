@@ -18,7 +18,7 @@ export default function MoviePage() {
   useEffect(() => {
     async function load() {
       const res = await axios.get(
-        `https://bookmyshow-backend-mzd2.onrender.com/api/shows/movie?movie=${encodeURIComponent(
+        `http://localhost:8000/api/shows/movie?movie=${encodeURIComponent(
           movieName
         )}`
       );
@@ -117,46 +117,6 @@ export default function MoviePage() {
           </p>
         </div>
       </div>
-
-      {/* CAST & CREW */}
-      {/* <div className="max-w-7xl mx-auto px-6 mt-10">
-        <h2 className="text-xl font-bold mb-4">Cast & Crew</h2>
-
-        <div className="flex gap-6 overflow-x-auto">
-          {[
-            {
-              name: "Millie Bobby Brown",
-              role: "Eleven",
-              img: "https://upload.wikimedia.org/wikipedia/commons/7/7f/Millie_Bobby_Brown_by_Gage_Skidmore_2.jpg",
-            },
-            {
-              name: "Finn Wolfhard",
-              role: "Mike",
-              img: "https://upload.wikimedia.org/wikipedia/commons/3/32/Finn_Wolfhard_by_Gage_Skidmore_2.jpg",
-            },
-            {
-              name: "Noah Schnapp",
-              role: "Will",
-              img: "https://upload.wikimedia.org/wikipedia/commons/5/5b/Noah_Schnapp_by_Gage_Skidmore.jpg",
-            },
-            {
-              name: "David Harbour",
-              role: "Hopper",
-              img: "https://upload.wikimedia.org/wikipedia/commons/f/f5/David_Harbour_by_Gage_Skidmore.jpg",
-            },
-          ].map((c, i) => (
-            <div key={i} className="w-36 text-center">
-              <img
-                src={c.img}
-                className="h-44 w-full object-cover rounded-lg shadow"
-                alt={c.name}
-              />
-              <h4 className="font-semibold mt-2">{c.name}</h4>
-              <p className="text-sm text-gray-500">{c.role}</p>
-            </div>
-          ))}
-        </div>
-      </div> */}
 
       {/* REVIEWS */}
       <div className="max-w-7xl mx-auto px-6 mt-12 mb-10">

@@ -21,9 +21,7 @@ export default function AdminTheatres() {
   async function loadTheatres() {
     try {
       setLoading(true);
-      const res = await axios.get(
-        "https://bookmyshow-backend-mzd2.onrender.com/api/admin/theatres"
-      );
+      const res = await axios.get("http://localhost:8000/api/admin/theatres");
       setTheatres(res.data.theatres || []);
     } catch (err) {
       console.error(err);
@@ -41,7 +39,7 @@ export default function AdminTheatres() {
   async function confirmAction() {
     try {
       await axios.put(
-        `https://bookmyshow-backend-mzd2.onrender.com/api/admin/theatre/${selectedTheatre._id}/status`,
+        `http://localhost:8000/api/admin/theatre/${selectedTheatre._id}/status`,
         { status: action }
       );
       setModalOpen(false);

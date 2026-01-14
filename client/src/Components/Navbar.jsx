@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { ChevronDown, Search, Menu, X } from "lucide-react";
+import { ChevronDown, ChevronRight, Search, Menu, X } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { LogOut } from "lucide-react";
 import SearchModal from "./SearchModal";
@@ -175,13 +175,10 @@ function SellerNavbar() {
   const [openSearch, setOpenSearch] = useState(false);
 
   async function signOut() {
-    await fetch(
-      "https://bookmyshow-backend-mzd2.onrender.com/api/seller/logout",
-      {
-        method: "POST",
-        credentials: "include",
-      }
-    );
+    await fetch("http://localhost:8000/api/seller/logout", {
+      method: "POST",
+      credentials: "include",
+    });
 
     window.location.href = "/seller/signin";
   }
@@ -231,6 +228,7 @@ function SellerNavbar() {
             Shows
           </button>
         </nav>
+        {/* MOBILE SEARCH ICON */}
 
         {/* RIGHT */}
         <div className="flex items-center gap-4">
@@ -303,8 +301,8 @@ function SellerNavbar() {
             Bookings
           </button>
           <button
-            onClick={signOut}
-            className="block w-full text-left text-red-500"
+            onClick={handleSignOut}
+            className="block w-full text-left text-red-500 font-medium py-1"
           >
             Logout
           </button>
@@ -334,9 +332,21 @@ function UserNavbar({ movies = [] }) {
     setSearch(e.target.value);
   }
 
+  /* 🔐 CHECK LOGIN FROM COOKIE */
   useEffect(() => {
-    const hasToken = document.cookie.includes("token=");
-    setLoggedIn(hasToken);
+    async function checkAuth() {
+      try {
+        const res = await fetch("http://localhost:8000/auth/me", {
+          credentials: "include",
+        });
+
+        setLoggedIn(res.ok);
+      } catch (err) {
+        setLoggedIn(false);
+      }
+    }
+
+    checkAuth();
   }, []);
 
   function selectCity(cityName) {
@@ -359,9 +369,21 @@ function UserNavbar({ movies = [] }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleSignOut = () => {
-    document.cookie = "token=; Max-Age=0; path=/;";
-    window.location.reload();
+  /* 🔐 BACKEND LOGOUT (COOKIE BASED) */
+  const handleSignOut = async () => {
+    try {
+      await fetch("http://localhost:8000/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      setLoggedIn(false);
+      setShowProfileMenu(false);
+      setMobileMenu(false);
+      navigate("/");
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
   };
 
   const categories = [
@@ -376,6 +398,7 @@ function UserNavbar({ movies = [] }) {
     "Kids",
     "Offers",
   ];
+
   const popularCities = [
     {
       name: "Mumbai",
@@ -424,12 +447,22 @@ function UserNavbar({ movies = [] }) {
       {/* TOP NAV */}
       <div className="w-full bg-white shadow-lg z-50">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          <img
-            onClick={() => navigate("/")}
-            src="https://upload.wikimedia.org/wikipedia/commons/7/75/Bookmyshow-logoid.png"
-            className="w-16 h-8 md:w-28 md:h-10 cursor-pointer"
-            alt="logo"
-          />
+          <div
+            className="flex flex-col items-start cursor-pointer"
+            onClick={() => setShowCityMenu(true)}
+          >
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/7/75/Bookmyshow-logoid.png"
+              className="w-18 h-8 md:w-28 md:h-10"
+              alt="logo"
+            />
+
+            {/* CITY NAME – MOBILE ONLY */}
+            <span className="md:hidden text-xs text-red-400 mt-0  flex items-center gap-1">
+              {city}
+              <ChevronRight size={12} />
+            </span>
+          </div>
 
           <div
             onClick={() => setOpenSearch(true)}
@@ -441,7 +474,6 @@ function UserNavbar({ movies = [] }) {
           {/* RIGHT */}
           <div className="flex items-center gap-4 md:gap-6">
             {/* CITY SELECTOR */}
-            {/* CITY SELECTOR */}
             <div className="relative hidden md:block">
               <button
                 onClick={() => setShowCityMenu(true)}
@@ -451,29 +483,24 @@ function UserNavbar({ movies = [] }) {
                 <ChevronDown size={18} />
               </button>
 
-              {/* FULL SCREEN CITY MODAL */}
               {showCityMenu && (
                 <div className="fixed inset-0 z-[9999] bg-black/50 flex justify-center items-start pt-20">
-                  {/* CITY POPUP BOX */}
                   <div
                     ref={cityRef}
                     className="bg-white w-[90%] max-w-4xl rounded-xl shadow-xl p-6 relative"
                   >
-                    {/* SEARCH */}
                     <input
                       type="text"
                       placeholder="Search for your city"
                       className="w-full border px-4 py-2 rounded-md outline-none"
                     />
 
-                    {/* DETECT LOCATION */}
                     <p className="mt-4 text-[#f84464] font-medium cursor-pointer">
                       📍 Detect my location
                     </p>
 
                     <hr className="my-5" />
 
-                    {/* POPULAR CITIES */}
                     <h3 className="text-center text-gray-600 font-semibold mb-4">
                       Popular Cities
                     </h3>
@@ -486,7 +513,6 @@ function UserNavbar({ movies = [] }) {
                           className="flex flex-col items-center cursor-pointer hover:text-[#f84464]"
                         >
                           <CityIcon src={c.icon} name={c.name} />
-
                           <p className="text-sm mt-2">{c.name}</p>
                         </div>
                       ))}
@@ -494,7 +520,6 @@ function UserNavbar({ movies = [] }) {
 
                     <hr className="my-6" />
 
-                    {/* OTHER CITIES (BOOKMYSHOW STYLE) */}
                     <h4 className="text-center text-gray-600 font-medium mb-3">
                       Other Cities
                     </h4>
@@ -622,7 +647,6 @@ function UserNavbar({ movies = [] }) {
                       ))}
                     </div>
 
-                    {/* CLOSE */}
                     <p
                       onClick={() => setShowCityMenu(false)}
                       className="text-center mt-6 text-[#f84464] cursor-pointer font-medium"
@@ -643,7 +667,15 @@ function UserNavbar({ movies = [] }) {
               </button>
             )}
 
-            {/* PROFILE (DESKTOP) */}
+            {/* {loggedIn && (
+              <button
+                onClick={handleSignOut}
+                className="hidden sm:flex items-center gap-1 text-red-500 text-sm font-medium"
+              >
+                Sign out
+              </button>
+            )} */}
+
             {loggedIn && (
               <div ref={profileRef} className="relative hidden md:block">
                 <div
@@ -671,8 +703,14 @@ function UserNavbar({ movies = [] }) {
                 )}
               </div>
             )}
+            {/* MOBILE SEARCH ICON */}
+            <button
+              onClick={() => setOpenSearch(true)}
+              className="md:hidden text-gray-700"
+            >
+              <Search size={22} />
+            </button>
 
-            {/* MOBILE ICON */}
             <button
               onClick={() => setMobileMenu(!mobileMenu)}
               className="md:hidden"
@@ -683,11 +721,8 @@ function UserNavbar({ movies = [] }) {
         </div>
       </div>
 
-      {/* MOBILE USER MENU */}
-      {/* MOBILE USER MENU */}
       {mobileMenu && (
         <div className="md:hidden bg-white shadow border-t p-4 space-y-4">
-          {/* 🔴 PRIMARY CTA – LIST YOUR SHOW (MOBILE) */}
           <button
             onClick={() => navigate("/seller/signin")}
             className="w-full bg-[#f84464] text-white py-2 rounded-md font-medium"
@@ -695,7 +730,6 @@ function UserNavbar({ movies = [] }) {
             List Your Show
           </button>
 
-          {/* CITY */}
           <div className="border-b pb-2">
             <p className="text-sm font-semibold mb-1">Select City</p>
             {popularCities.map((c) => (
@@ -709,7 +743,6 @@ function UserNavbar({ movies = [] }) {
             ))}
           </div>
 
-          {/* NAV LINKS */}
           {categories.map((cat) => (
             <p key={cat} className="cursor-pointer">
               {cat}
@@ -719,9 +752,9 @@ function UserNavbar({ movies = [] }) {
           {!loggedIn && (
             <button
               onClick={() => navigate("/register")}
-              className="bg-[#f84464] text-white w-full py-2 rounded"
+              className="w-full bg-[#f84464] text-white py-2 rounded-md font-medium"
             >
-              Sign in
+              Sign In
             </button>
           )}
 
@@ -735,7 +768,7 @@ function UserNavbar({ movies = [] }) {
               </button>
               <button
                 onClick={handleSignOut}
-                className="block w-full text-left text-red-500"
+                className="w-full bg-[#f84464] text-white py-2 rounded-md font-medium"
               >
                 Logout
               </button>
@@ -744,7 +777,6 @@ function UserNavbar({ movies = [] }) {
         </div>
       )}
 
-      {/* SECOND NAV DESKTOP */}
       <div className="bg-[#f8f8f8] hidden md:block">
         <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between">
           <div className="flex gap-6 text-sm text-gray-600">
@@ -768,6 +800,7 @@ function UserNavbar({ movies = [] }) {
           </div>
         </div>
       </div>
+
       <SearchModal
         open={openSearch}
         onClose={() => {

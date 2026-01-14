@@ -9,10 +9,9 @@ export default function RoleGate({ children }) {
     async function detectRole() {
       try {
         // 🔴 SELLER (highest priority)
-        const sellerRes = await fetch(
-          "https://bookmyshow-backend-mzd2.onrender.com/api/seller/me",
-          { credentials: "include" }
-        );
+        const sellerRes = await fetch("http://localhost:8000/api/seller/me", {
+          credentials: "include",
+        });
         const seller = await sellerRes.json();
         if (seller.ok) {
           setRole("seller");
@@ -20,10 +19,9 @@ export default function RoleGate({ children }) {
         }
 
         // 🔴 ADMIN
-        const adminRes = await fetch(
-          "https://bookmyshow-backend-mzd2.onrender.com/api/admin/me",
-          { credentials: "include" }
-        );
+        const adminRes = await fetch("http://localhost:8000/api/admin/me", {
+          credentials: "include",
+        });
         const admin = await adminRes.json();
         if (admin.ok) {
           setRole("admin");
@@ -31,10 +29,9 @@ export default function RoleGate({ children }) {
         }
 
         // 🟢 USER
-        const userRes = await fetch(
-          "https://bookmyshow-backend-mzd2.onrender.com/api/auth/me",
-          { credentials: "include" }
-        );
+        const userRes = await fetch("http://localhost:8000/api/auth/me", {
+          credentials: "include",
+        });
         const user = await userRes.json();
         if (user.ok) {
           setRole("user");

@@ -33,18 +33,10 @@ export default function SellerDashboard() {
     try {
       const [theatresRes, screensRes, showsRes, bookingsRes] =
         await Promise.all([
-          axios.get(
-            "https://bookmyshow-backend-mzd2.onrender.com/api/seller/theatres"
-          ),
-          axios.get(
-            "https://bookmyshow-backend-mzd2.onrender.com/api/seller/screens"
-          ),
-          axios.get(
-            "https://bookmyshow-backend-mzd2.onrender.com/api/seller/shows"
-          ),
-          axios.get(
-            "https://bookmyshow-backend-mzd2.onrender.com/api/seller/bookings"
-          ),
+          axios.get("http://localhost:8000/api/seller/theatres"),
+          axios.get("http://localhost:8000/api/seller/screens"),
+          axios.get("http://localhost:8000/api/seller/shows"),
+          axios.get("http://localhost:8000/api/seller/bookings"),
         ]);
 
       const bookings = bookingsRes.data.bookings || [];

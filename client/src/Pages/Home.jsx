@@ -58,70 +58,76 @@ function shuffleArray(arr) {
 // HERO (UNCHANGED)
 // ============================================================
 
-function Hero({ city, carouselMovies }) {
-  const navigate = useNavigate();
-  const firstMovie = carouselMovies?.[0];
+const BANNERS = [
+  "https://www.adgully.com/img/800/201712/creative_tvc.jpg",
+  "https://cdn.grabon.in/gograbon/indulge/wp-content/uploads/2023/08/ticket-purchase.jpg",
+  "https://blog.releasemyad.com/wp-content/uploads/2020/07/bookmyshow.jpg",
+  "https://images.freekaamaal.com/post_images/1582183521.png",
+  "https://assets-in-gm.bmscdn.com/promotions/cms/creatives/1765883058083_popdesjan.jpg",
+  "https://couponswala.com/blog/wp-content/uploads/2021/07/25-1-1-1024x576.jpg.webp",
+  "https://in.bmscdn.com/offers/tncbanner/get-rs-100-off-on-your-tickets-take100.jpg?03072023171523",
+  "https://cd9941cc.delivery.rocketcdn.me/wp-content/uploads/2024/06/Book-My-Show-HSBC-NEws2-Post.jpg",
+  "https://bsmedia.business-standard.com/_media/bs/img/article/2016-07/05/full/1467721201-5966.jpg?im=FeatureCrop,size=(826,465)",
+];
+
+export function Hero() {
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActive((prev) => (prev + 1) % BANNERS.length);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <section className="relative bg-gradient-to-b from-[#fdf0f0] to-white rounded-b-xl shadow-inner">
-      <div className="max-w-7xl mx-auto px-4 py-10 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-          <div className="col-span-2">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-gray-900">
-              Watch movies, events and plays near you
-            </h1>
-            <p className="mt-4 text-lg text-gray-700">
-              Book tickets for your favourite movies, live shows and events in{" "}
-              {city}
-            </p>
-            <div className="mt-8 flex gap-3">
-              <button
-                // onClick={() => navigate("/movies")}
-                className={`px-6 py-3 rounded-lg text-white font-bold shadow-xl ${BMS_BTN}`}
-              >
-                Book Tickets
-              </button>
-              <button
-                // onClick={() => navigate("/events")}
-                className="px-6 py-3 rounded-lg border border-gray-300 text-gray-800"
-              >
-                Theatres Near Me
-              </button>
-            </div>
-          </div>
-          {firstMovie && (
+    <section className="bg-gray-100 py-4">
+      <div className="max-w-7xl mx-auto px-4">
+        {/* BANNER CONTAINER */}
+        <div className="relative h-[160px] sm:h-[220px] md:h-[300px] overflow-hidden rounded-xl bg-black">
+          {BANNERS.map((img, index) => (
             <div
-              onClick={() =>
-                navigate(`/movie/${encodeURIComponent(firstMovie.title)}`)
-              }
-              className="hidden md:flex justify-end pr-8 cursor-pointer"
+              key={index}
+              className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+                index === active ? "opacity-100 z-10" : "opacity-0 z-0"
+              }`}
             >
-              <div className="w-64 rounded-xl overflow-hidden shadow-2xl bg-white">
-                <img
-                  src={firstMovie.poster}
-                  className="w-full h-72 object-cover"
-                  alt={firstMovie.title}
-                  onError={(e) => {
-                    e.target.src = "";
-                  }}
-                />
-                <div className="p-4">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <Star size={14} className="text-[#f84464] mr-1" />
-                    {firstMovie.rating || "8.5/10"}
-                  </div>
-                  <div className="font-bold text-xl truncate">
-                    {firstMovie.title}
-                  </div>
-                </div>
-              </div>
+              <img
+                src={img}
+                alt="promo-banner"
+                className="w-full h-full object-cover"
+                draggable="false"
+              />
             </div>
-          )}
+          ))}
+
+          {/* DOT INDICATORS */}
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+            {BANNERS.map((_, i) => (
+              <span
+                key={i}
+                onClick={() => setActive(i)}
+                className={`h-2 w-2 rounded-full cursor-pointer transition ${
+                  i === active ? "bg-white" : "bg-white/40"
+                }`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>
   );
 }
+
+// https://www.adgully.com/img/800/201712/creative_tvc.jpg
+// https://cdn.grabon.in/gograbon/indulge/wp-content/uploads/2023/08/ticket-purchase.jpg
+// https://blog.releasemyad.com/wp-content/uploads/2020/07/bookmyshow.jpg
+// https://images.freekaamaal.com/post_images/1582183521.png
+// https://couponswala.com/blog/wp-content/uploads/2021/07/25-1-1-1024x576.jpg.webp
+// https://in.bmscdn.com/offers/tncbanner/get-rs-100-off-on-your-tickets-take100.jpg?03072023171523
+// https://cd9941cc.delivery.rocketcdn.me/wp-content/uploads/2024/06/Book-My-Show-HSBC-NEws2-Post.jpg
+// https://bsmedia.business-standard.com/_media/bs/img/article/2016-07/05/full/1467721201-5966.jpg?im=FeatureCrop,size=(826,465)
 
 // TITLE
 
@@ -186,6 +192,43 @@ function TheaterCard({ t }) {
 // ============================================================
 // MAIN PAGE
 // ============================================================
+const upcomingMovies = [
+  {
+    title: "Dunki",
+    poster: "https://m.media-amazon.com/images/I/91zOCNs+x-L.jpg",
+    sub: "Hindi · Action",
+  },
+  {
+    title: "KGF Chapter 3",
+    poster:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSE5XXL0RadcwWnn6JfiAlGK5lvHiZ1lMhogA&s",
+    sub: "Kannada · Action",
+  },
+  {
+    title: "Animal Park",
+    poster:
+      "https://preview.redd.it/talking-about-animal-park-v0-bngithurymyd1.jpeg?width=1080&crop=smart&auto=webp&s=c449d59919c1a8972290fd9d6e92208e528d686d",
+    sub: "Hindi · Crime",
+  },
+  {
+    title: "Salaar 2",
+    poster:
+      "https://m.media-amazon.com/images/M/MV5BOGE3YWQ3NzAtNmEwOS00OGY5LThkNzEtZDg5NDRjMzRmMzhiXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
+    sub: "Telugu · Action",
+  },
+  {
+    title: "Tiger 3",
+    poster: "https://upload.wikimedia.org/wikipedia/en/f/f8/Tiger_3_poster.jpg",
+    sub: "Hindi · Action",
+  },
+  {
+    title: "Jawan 2",
+    poster:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5xzqrrx8pVxJ5eJd_PbVV1WVxRcPRHrRNNA&s",
+    sub: "Hindi · Thriller",
+  },
+];
+
 export default function Home() {
   const [city, setCity] = useState(() => {
     return localStorage.getItem("city") || "Mumbai";
@@ -215,7 +258,7 @@ export default function Home() {
     async function loadTheatres() {
       try {
         const res = await axios.get(
-          `https://bookmyshow-backend-mzd2.onrender.com/api/user/theatres?city=${city}`
+          `http://localhost:8000/api/user/theatres?city=${city}`
         );
 
         if (res.data.ok) {
@@ -240,7 +283,7 @@ export default function Home() {
         setLoading(true);
 
         const res = await axios.get(
-          `https://bookmyshow-backend-mzd2.onrender.com/api/user/shows?city=${city}`
+          `http://localhost:8000/api/user/shows?city=${city}`
         );
 
         const validShows = res.data.shows.filter(
@@ -300,6 +343,21 @@ export default function Home() {
           <MovieCard key={i} m={m} />
         ))}
       </div>
+      {/* STREAM PROMO BANNER */}
+      <div className="max-w-7xl mx-auto px-4 my-10">
+        <div className="rounded-xl overflow-hidden cursor-pointer">
+          <img
+            src="https://assets-in.bmscdn.com/discovery-catalog/collections/tr:w-1440,h-120/stream-leadin-web-collection-202210241242.png"
+            alt="BookMyShow Stream"
+            draggable="false"
+            className="
+        w-full
+        h-[80px] sm:h-[180px] md:h-[120px]
+        object-fill
+      "
+          />
+        </div>
+      </div>
 
       {/* CATEGORY GRID (UNCHANGED) */}
       <SectionTitle title="Browse by Category" />
@@ -316,57 +374,12 @@ export default function Home() {
         )}
       </div>
       {/* UPCOMING MOVIES (✅ ADDED) */}
+      {/* UPCOMING MOVIES */}
       <SectionTitle title="Upcoming Movies" />
 
       <div className="max-w-7xl mx-auto px-4 flex gap-6 overflow-x-auto pb-6">
-        {[
-          {
-            title: "Dunki",
-            img: "https://m.media-amazon.com/images/I/91zOCNs+x-L.jpg",
-          },
-          // {
-          //   title: "Pushpa 2",
-          //   img: "https://m.media-amazon.com/images/M/MV5BZjllNTdiM2QtYjQ0Ni00ZGM1LWFlYmUtNWY0YjMzYWIxOTYxXkEyXkFqcGc@._V1_.jpg",
-          // },
-          {
-            title: "KGF Chapter 3",
-            img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSE5XXL0RadcwWnn6JfiAlGK5lvHiZ1lMhogA&s",
-          },
-          {
-            title: "Animal Park",
-            img: "https://preview.redd.it/talking-about-animal-park-v0-bngithurymyd1.jpeg?width=1080&crop=smart&auto=webp&s=c449d59919c1a8972290fd9d6e92208e528d686d",
-          },
-          {
-            title: "Salaar 2",
-            img: "https://m.media-amazon.com/images/M/MV5BOGE3YWQ3NzAtNmEwOS00OGY5LThkNzEtZDg5NDRjMzRmMzhiXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
-          },
-          {
-            title: "Tiger 3",
-            img: "https://upload.wikimedia.org/wikipedia/en/f/f8/Tiger_3_poster.jpg",
-          },
-          // {
-          //   title: "Fighter",
-          //   img: "https://upload.wikimedia.org/wikipedia/en/d/df/Fighter_film_teaser.jpg",
-          // },
-          {
-            title: "Jawan 2",
-            img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5xzqrrx8pVxJ5eJd_PbVV1WVxRcPRHrRNNA&s",
-          },
-        ].map((m, i) => (
-          <div
-            key={i}
-            className="w-48 rounded-lg cursor-pointer hover:scale-105 transition"
-          >
-            <div className="h-72 rounded-lg overflow-hidden shadow-lg">
-              <img
-                src={m.img}
-                alt={m.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-
-            <div className="font-bold mt-2 text-center">{m.title}</div>
-          </div>
+        {upcomingMovies.map((m, i) => (
+          <MovieCard key={i} m={m} />
         ))}
       </div>
 
