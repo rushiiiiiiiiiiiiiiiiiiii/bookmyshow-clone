@@ -23,7 +23,6 @@ export default function MoviePage() {
   const [suggested, setSuggested] = useState([]);
   const [submitting, setSubmitting] = useState(false);
 
-
   useEffect(() => {
     async function load() {
       const res = await axios.get(
@@ -107,9 +106,9 @@ export default function MoviePage() {
       <Navbar />
 
       {/* HERO */}
-     {/* HERO */}
-<div
-  className="
+      {/* HERO */}
+      <div
+        className="
     relative
     h-[420px]
     sm:h-[400px]
@@ -117,29 +116,29 @@ export default function MoviePage() {
     bg-cover
     bg-center
   "
-  style={{ backgroundImage: `url(${movie.poster})` }}
->
-  {/* DARK OVERLAY */}
-  <div className="absolute inset-0 bg-black/70 sm:bg-gradient-to-t sm:from-black sm:via-black/80 sm:to-black/40"></div>
+        style={{ backgroundImage: `url(${movie.poster})` }}
+      >
+        {/* DARK OVERLAY */}
+        <div className="absolute inset-0 bg-black/70 sm:bg-gradient-to-t sm:from-black sm:via-black/80 sm:to-black/40"></div>
 
-  {/* CONTENT */}
-{/* CONTENT */}
-<div
+        {/* CONTENT */}
+        {/* CONTENT */}
+       <div
   className="
     relative h-full
     flex flex-col items-center justify-center
     sm:flex-col sm:items-center sm:justify-end
-    md:flex-row md:items-end md:justify-start
-    px-4 sm:px-6 pb-6 sm:pb-10
+    md:flex-row md:items-center md:justify-start
+    px-4 sm:px-6
     max-w-7xl mx-auto
   "
 >
 
-    {/* POSTER */}
-    <img
-  src={movie.poster}
-  alt={movie.movie}
-  className="
+          {/* POSTER */}
+          <img
+            src={movie.poster}
+            alt={movie.movie}
+            className="
     h-56 w-40
     sm:h-72 sm:w-48
     md:h-80 md:w-56
@@ -149,43 +148,41 @@ export default function MoviePage() {
     border border-white/10
     mb-5 sm:mb-6 md:mb-0
   "
-/>
+          />
 
-
-    {/* DETAILS */}
-    <div
-  className="
+          {/* DETAILS */}
+          <div
+            className="
     text-white
     text-center sm:text-center
     md:text-left
     md:ml-10
     max-w-xl
-    mb-20
+    md:-translate-y-10
   "
->
+          >
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
+              {movie.movie}
+            </h1>
 
-      <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
-        {movie.movie}
-      </h1>
+            <div className="flex justify-center sm:justify-start gap-4 text-xs sm:text-sm text-gray-300 mb-2">
+              <span className="flex items-center gap-1">
+                <Clock size={14} /> {movie.durationMinutes} mins
+              </span>
+              <span className="flex items-center gap-1">
+                <Globe size={14} /> {movie.language}
+              </span>
+              <span className="flex items-center gap-1">
+                <BadgeCheck size={14} /> {movie.certificate}
+              </span>
+            </div>
 
-      <div className="flex justify-center sm:justify-start gap-4 text-xs sm:text-sm text-gray-300 mb-2">
-        <span className="flex items-center gap-1">
-          <Clock size={14} /> {movie.durationMinutes} mins
-        </span>
-        <span className="flex items-center gap-1">
-          <Globe size={14} /> {movie.language}
-        </span>
-        <span className="flex items-center gap-1">
-          <BadgeCheck size={14} /> {movie.certificate}
-        </span>
-      </div>
+            <p className="text-xs sm:text-sm text-gray-400 mb-4">
+              {movie.format} • Subtitles: {movie.isSubtitled ? "Yes" : "No"}
+            </p>
 
-      <p className="text-xs sm:text-sm text-gray-400 mb-4">
-        {movie.format} • Subtitles: {movie.isSubtitled ? "Yes" : "No"}
-      </p>
-
-      <button
-        className={`
+            <button
+              className={`
           ${BMS_BTN}
           w-full sm:w-auto
           px-8
@@ -196,14 +193,13 @@ export default function MoviePage() {
           text-base
           shadow-lg
         `}
-        onClick={() => navigate(`/buytickets/${movie.movie}`)}
-      >
-        Book Tickets
-      </button>
-    </div>
-  </div>
-</div>
-
+              onClick={() => navigate(`/buytickets/${movie.movie}`)}
+            >
+              Book Tickets
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* ABOUT */}
       <div className="max-w-7xl mx-auto px-6 mt-10">
@@ -244,61 +240,60 @@ export default function MoviePage() {
           />
 
           <button
-  disabled={submitting}
-  className={`${BMS_BTN} px-6 py-2 text-white rounded-lg flex items-center justify-center gap-2 disabled:opacity-70`}
-  onClick={async () => {
-    if (!comment.trim()) {
-      toast.error("Please write a review before submitting");
-      return;
-    }
+            disabled={submitting}
+            className={`${BMS_BTN} px-6 py-2 text-white rounded-lg flex items-center justify-center gap-2 disabled:opacity-70`}
+            onClick={async () => {
+              if (!comment.trim()) {
+                toast.error("Please write a review before submitting");
+                return;
+              }
 
-    try {
-      setSubmitting(true);
+              try {
+                setSubmitting(true);
 
-      await axios.post(
-        "https://bookmyshow-backend-mzd2.onrender.com/api/reviews",
-        { movie: movie.movie, rating, comment },
-        { withCredentials: true },
-      );
+                await axios.post(
+                  "https://bookmyshow-backend-mzd2.onrender.com/api/reviews",
+                  { movie: movie.movie, rating, comment },
+                  { withCredentials: true },
+                );
 
-      toast.success("Review submitted successfully 🎉");
+                toast.success("Review submitted successfully 🎉");
 
-      setComment("");
-      setRating(5);
+                setComment("");
+                setRating(5);
 
-      const reviewRes = await axios.get(
-        `https://bookmyshow-backend-mzd2.onrender.com/api/reviews/${encodeURIComponent(
-          movie.movie,
-        )}`,
-      );
+                const reviewRes = await axios.get(
+                  `https://bookmyshow-backend-mzd2.onrender.com/api/reviews/${encodeURIComponent(
+                    movie.movie,
+                  )}`,
+                );
 
-      setReviews(reviewRes.data.reviews);
-    } catch (err) {
-      if (err.response?.status === 401) {
-        toast.error("Please login to submit a review");
-        navigate("/register");
-        return;
-      }
+                setReviews(reviewRes.data.reviews);
+              } catch (err) {
+                if (err.response?.status === 401) {
+                  toast.error("Please login to submit a review");
+                  navigate("/register");
+                  return;
+                }
 
-      toast.error(
-        err.response?.data?.message ||
-          "Failed to submit review. Please try again.",
-      );
-    } finally {
-      setSubmitting(false);
-    }
-  }}
->
-  {submitting ? (
-    <>
-      <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"></span>
-      Submitting...
-    </>
-  ) : (
-    "Submit Review"
-  )}
-</button>
-
+                toast.error(
+                  err.response?.data?.message ||
+                    "Failed to submit review. Please try again.",
+                );
+              } finally {
+                setSubmitting(false);
+              }
+            }}
+          >
+            {submitting ? (
+              <>
+                <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"></span>
+                Submitting...
+              </>
+            ) : (
+              "Submit Review"
+            )}
+          </button>
         </div>
       </div>
 
