@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, Navigate } from "react-router-dom";
-
+import React from 'react'
 export default function RoleGate({ children }) {
   const location = useLocation();
   const [role, setRole] = useState("loading");
