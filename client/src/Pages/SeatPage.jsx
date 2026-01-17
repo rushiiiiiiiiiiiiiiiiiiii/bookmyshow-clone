@@ -37,7 +37,7 @@ function Seat({ id, booked, selected, toggleSeat, loading }) {
   const isSelected = selected.includes(id);
 
   let base =
-    "w-7 h-6 mx-1 mb-1 rounded-t-md transition-all duration-150 flex items-center justify-center text-[9px] font-semibold select-none";
+    "w-6 h-5 sm:w-7 sm:h-6 mx-[2px] sm:mx-1 mb-1 rounded-t-md transition-all duration-150 flex items-center justify-center text-[9px] sm:text-[9px] font-semibold select-none";
 
   if (isBooked) {
     base += " bg-gray-500 cursor-not-allowed text-white";
@@ -198,16 +198,16 @@ export default function SeatPage() {
   // -------------------------
   // LOADING
   // -------------------------
- if (loading) {
-     return (
-       <>
-         {/* <Navbar /> */}
-         <div className="min-h-[70vh] flex items-center justify-center">
-           <div className="w-14 h-14 border-[4px] border-[#f84464]/20 border-t-[#f84464] rounded-full animate-spin"></div>
-         </div>
-       </>
-     );
-   }
+  if (loading) {
+    return (
+      <>
+        {/* <Navbar /> */}
+        <div className="min-h-[70vh] flex items-center justify-center">
+          <div className="w-14 h-14 border-[4px] border-[#f84464]/20 border-t-[#f84464] rounded-full animate-spin"></div>
+        </div>
+      </>
+    );
+  }
   if (!screen || !show) {
     return <div className="p-10 text-center">Failed to load seat layout</div>;
   }
@@ -229,7 +229,7 @@ export default function SeatPage() {
       {/* ===================
            🎬 MOVIE HEADER
       =================== */}
-      <div className="bg-white shadow-sm">
+      <div className="bg-white shadow-sm sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4">
           {/* POSTER */}
           <img
@@ -269,7 +269,7 @@ export default function SeatPage() {
       =================== */}
       <div className="max-w-5xl mx-auto px-3 sm:px-6 pt-6 sm:pt-8 pb-28">
         <div className="flex justify-center mb-8 sm:mb-10">
-          <div className="relative w-full max-w-xs">
+          <div className="relative w-full max-w-[220px] sm:max-w-xs">
             <div className="h-3 bg-black rounded-t-full opacity-70" />
             <div className="h-3 w-[80%] mx-auto bg-black rounded-t-full absolute -top-1 left-1/2 transform -translate-x-1/2 opacity-90" />
             <p className="text-center mt-3 text-[10px] sm:text-xs tracking-widest text-gray-600">
@@ -287,7 +287,7 @@ export default function SeatPage() {
               key={r}
               className="flex items-center mb-2 min-w-max px-1 sm:px-0"
             >
-              <span className="w-5 sm:w-6 text-right mr-2 sm:mr-3 text-xs sm:text-sm text-gray-500">
+              <span className="hidden sm:block w-6 text-right mr-3 text-sm text-gray-500">
                 {r}
               </span>
 
@@ -306,7 +306,7 @@ export default function SeatPage() {
                   );
                 })}
 
-                <div className="w-6 sm:w-10" />
+                <div className="w-3 sm:w-10" />
 
                 {[...Array(rightSeats)].map((_, i) => {
                   const seat = `${r}${leftSeats + i + 1}`;
@@ -323,7 +323,7 @@ export default function SeatPage() {
                 })}
               </div>
 
-              <span className="w-5 sm:w-6 ml-2 sm:ml-3 text-xs sm:text-sm text-gray-500">
+              <span className="hidden sm:block w-6 ml-3 text-sm text-gray-500">
                 {r}
               </span>
             </div>
@@ -342,7 +342,7 @@ export default function SeatPage() {
            PAY BAR
       =================== */}
       {selected.length > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center z-50">
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg px-4 sm:px-6 py-2.5 sm:py-4 flex justify-between items-center z-50">
           <div className="min-w-0">
             <div className="text-sm sm:text-lg font-bold">
               {selected.length} / {limit} Ticket(s)
@@ -547,7 +547,7 @@ export default function SeatPage() {
 //       {/* SCREEN */}
 //       <div className="max-w-5xl mx-auto px-2 sm:px-4 pt-6 pb-24 sm:pb-28">
 //         <div className="flex justify-center mb-6">
-//           <div className="relative w-full max-w-xs">
+//           <div className="relative w-full max-w-[220px] sm:max-w-xs">
 //             <div className="h-2 bg-black rounded-t-full opacity-70" />
 //             <div className="h-2 w-[80%] mx-auto bg-black rounded-t-full absolute -top-1 left-1/2 -translate-x-1/2 opacity-90" />
 //             <p className="text-center mt-2 text-[10px] tracking-widest text-gray-600">
