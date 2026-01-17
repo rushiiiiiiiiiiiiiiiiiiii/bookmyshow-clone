@@ -119,7 +119,16 @@ export default function MoviePage() {
         style={{ backgroundImage: `url(${movie.poster})` }}
       >
         {/* DARK OVERLAY */}
-        <div className="absolute inset-0 bg-black/70 sm:bg-gradient-to-t sm:from-black sm:via-black/80 sm:to-black/40"></div>
+<div className="
+  absolute inset-0
+  bg-black/15
+  sm:bg-gradient-to-t
+  sm:from-black/55
+  sm:via-black/30
+  sm:to-black/5
+"></div>
+
+
 
         {/* CONTENT */}
         {/* CONTENT */}

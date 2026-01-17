@@ -99,7 +99,7 @@ export default function PaymentPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f1f3f6]">
+    <div className="min-h-screen bg-[#f1f3f6] pb-28 lg:pb-0">
       <Navbar />
 
       {/* HEADER */}
@@ -109,13 +109,16 @@ export default function PaymentPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-5 py-6 grid grid-cols-12 gap-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-5 py-4 sm:py-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* LEFT PANEL */}
-        <div className="col-span-8 bg-white rounded-lg shadow">
+        <div className="lg:col-span-8 bg-white rounded-lg shadow">
           <div className="px-4 py-3 font-bold">Payment options</div>
 
-          <div className="flex">
-            <div className="w-64">
+          <div className="flex flex-col sm:flex-row">
+            <div
+              className="w-full sm:w-64 border-b sm:border-b-0 sm:border-r
+  flex sm:block overflow-x-auto sm:overflow-visible"
+            >
               <SidebarItem
                 icon={<PiggyBank size={18} />}
                 label="Preferred payments"
@@ -154,7 +157,7 @@ export default function PaymentPage() {
               />
             </div>
 
-            <div className="flex-1 p-6">
+            <div className="flex-1 p-4 sm:p-6">
               <h3 className="font-bold mb-4">Pay using {activeMethod}</h3>
               <p className="text-sm text-gray-500">
                 Payment gateway simulation only
@@ -164,7 +167,7 @@ export default function PaymentPage() {
         </div>
 
         {/* RIGHT SUMMARY */}
-        <div className="col-span-4">
+        <div className="lg:col-span-4">
           <div className="bg-white rounded-lg shadow p-4">
             <h2 className="font-bold">{show.movie}</h2>
             <p className="text-xs text-gray-600 mt-1">
@@ -185,13 +188,15 @@ export default function PaymentPage() {
             </div>
           </div>
 
-          <button
-            disabled={loading}
-            onClick={handlePayment}
-            className="mt-4 w-full bg-[#f84464] hover:bg-[#e43a57] text-white py-3 rounded-lg font-bold shadow"
-          >
-            {loading ? "Processing..." : `PROCEED TO PAY ₹ ${finalTotal}`}
-          </button>
+          <div className="lg:static fixed bottom-0 left-0 right-0 bg-white p-4 lg:p-0 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] lg:shadow-none">
+            <button
+              disabled={loading}
+              onClick={handlePayment}
+              className="w-full bg-[#f84464] hover:bg-[#e43a57] text-white py-3 rounded-lg font-bold shadow"
+            >
+              {loading ? "Processing..." : `PROCEED TO PAY ₹ ${finalTotal}`}
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -202,7 +207,7 @@ function SidebarItem({ icon, label, active, onClick }) {
   return (
     <div
       onClick={onClick}
-      className={`flex items-center gap-3 px-4 py-3 text-sm cursor-pointer ${
+      className={`flex items-center gap-3 px-4 py-3 text-sm cursor-pointer whitespace-nowrap ${
         active
           ? "bg-[#fdecef] font-semibold text-[#f84464]"
           : "hover:bg-gray-100"
