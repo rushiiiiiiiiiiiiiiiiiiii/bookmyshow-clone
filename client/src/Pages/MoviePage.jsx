@@ -123,26 +123,47 @@ export default function MoviePage() {
   <div className="absolute inset-0 bg-black/70 sm:bg-gradient-to-t sm:from-black sm:via-black/80 sm:to-black/40"></div>
 
   {/* CONTENT */}
-  <div className="relative h-full flex flex-col items-center justify-center sm:justify-end px-4 sm:px-6 pb-6 sm:pb-10">
+{/* CONTENT */}
+<div
+  className="
+    relative h-full
+    flex flex-col items-center justify-center
+    sm:flex-col sm:items-center sm:justify-end
+    md:flex-row md:items-end md:justify-start
+    px-4 sm:px-6 pb-6 sm:pb-10
+    max-w-7xl mx-auto
+  "
+>
 
     {/* POSTER */}
     <img
-      src={movie.poster}
-      alt={movie.movie}
-      className="
-        h-56 w-40
-        sm:h-72 sm:w-48
-        md:h-80 md:w-56
-        object-cover
-        rounded-2xl
-        shadow-[0_20px_40px_rgba(0,0,0,0.7)]
-        border border-white/10
-        mb-5 sm:mb-0
-      "
-    />
+  src={movie.poster}
+  alt={movie.movie}
+  className="
+    h-56 w-40
+    sm:h-72 sm:w-48
+    md:h-80 md:w-56
+    object-cover
+    rounded-2xl
+    shadow-[0_20px_40px_rgba(0,0,0,0.7)]
+    border border-white/10
+    mb-5 sm:mb-6 md:mb-0
+  "
+/>
+
 
     {/* DETAILS */}
-    <div className="text-white text-center sm:text-left sm:max-w-xl sm:self-start sm:ml-[220px]">
+    <div
+  className="
+    text-white
+    text-center sm:text-center
+    md:text-left
+    md:ml-10
+    max-w-xl
+    mb-20
+  "
+>
+
       <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
         {movie.movie}
       </h1>

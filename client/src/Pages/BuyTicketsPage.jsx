@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../Components/Navbar";
 import { MapPin, Clock, BadgeCheck, Subtitles, Ticket } from "lucide-react";
-
+import Footer from '../Components/Footer'
 export default function BuyTicketsPage() {
   const { movieName } = useParams();
   const navigate = useNavigate();
@@ -183,6 +183,7 @@ if (loading) {
           </div>
         )}
       </div>
+      <Footer/>
     </div>
   );
 }
