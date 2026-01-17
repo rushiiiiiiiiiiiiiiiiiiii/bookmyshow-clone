@@ -426,11 +426,11 @@ export default function Home() {
         viewAllTo="/shows?type=recommended"
       />
 
-      {/* <div className="max-w-7xl mx-auto px-4 flex gap-6 overflow-x-auto pb-10">
+      <div className="max-w-7xl mx-auto px-4 flex gap-6 overflow-x-auto pb-10">
         {randomRecommended.map((m, i) => (
           <MovieCard key={i} m={m} />
         ))}
-      </div> */}
+      </div>
 
       <Footer />
     </div>
