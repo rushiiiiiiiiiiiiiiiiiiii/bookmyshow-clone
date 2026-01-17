@@ -13,5 +13,5 @@ Authrouter.post("/send-otp", sendOtp);
 Authrouter.post("/verify-otp", verifyOtp);
 Authrouter.post("/set-name", auth, setName);
 Authrouter.get("/me", auth, getMe);
-Authrouter.post("/logout", auth, logout);
+Authrouter.post("/logout", logout);
 module.exports = Authrouter;

@@ -1,35 +1,43 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 
 export default function ProtectedRoute({ children }) {
-  const [status, setStatus] = useState({
+  const [state, setState] = useState({
     loading: true,
     ok: false,
+    role: null,
   });
 
   useEffect(() => {
-    async function checkAuth() {
+    async function check() {
       try {
         const res = await fetch(
           "https://bookmyshow-backend-mzd2.onrender.com/auth/me",
-          {
-            credentials: "include",
-          }
+          { credentials: "include" }
         );
 
         const data = await res.json();
-        setStatus({ loading: false, ok: data.ok });
+        setState({
+          loading: false,
+          ok: data.ok,
+          role: data.user?.role,
+        });
       } catch {
-        setStatus({ loading: false, ok: false });
+        setState({ loading: false, ok: false, role: null });
       }
     }
 
-    checkAuth();
+    check();
   }, []);
 
-  if (status.loading) return null;
+  if (state.loading) return null;
 
-  if (!status.ok) return <Navigate to="/register" replace />;
+  if (!state.ok) return <Navigate to="/register" replace />;
+
+  // 🚫 ADMIN BLOCKED
+  if (state.role === "admin") {
+    return <Navigate to="/admin/dashboard" replace />;
+  }
 
   return children;
 }

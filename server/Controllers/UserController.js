@@ -132,35 +132,21 @@ exports.verifyOtp = async (req, res) => {
 };
 
 
-// LOGOUT (USER / ADMIN)
+// LOGOUT (USER / ADMIN / SELLER)
 exports.logout = async (req, res) => {
   try {
-    // role from auth middleware (JWT payload)
-    const role = req.user?.role || "user";
-
-    // role-based cookie
-    const cookieName = role === "admin" ? "admin_token" : "token";
-
-    /* ============================
-       PRODUCTION (HOSTED)
-    ============================ */
-    res.clearCookie(cookieName, {
+    const cookieOptions = {
       httpOnly: true,
       secure: true,
       sameSite: "none",
       path: "/",
-      partitioned: true
-    });
+      partitioned: true,
+    };
 
-    /* ============================
-       LOCAL DEVELOPMENT
-    ============================ */
-    // res.clearCookie(cookieName, {
-    //   httpOnly: true,
-    //   secure: false,
-    //   sameSite: "lax",
-    //   path: "/",
-    // });
+    // 🧹 CLEAR ALL AUTH COOKIES
+    res.clearCookie("token", cookieOptions);
+    res.clearCookie("admin_token", cookieOptions);
+    res.clearCookie("seller_token", cookieOptions);
 
     return res.status(200).json({
       ok: true,
@@ -174,6 +160,7 @@ exports.logout = async (req, res) => {
     });
   }
 };
+
 
 
 
@@ -197,12 +184,26 @@ exports.setName = async (req, res) => {
 };
 
 // GET LOGGED-IN USER
+// GET LOGGED-IN USER (ROLE AWARE)
 exports.getMe = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
-    res.json({ ok: true, user });
+    const user = await User.findById(req.user.id).select("-__v");
+
+    if (!user) {
+      return res.status(401).json({ ok: false });
+    }
+
+    return res.json({
+      ok: true,
+      user: {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+        name: user.name,
+      },
+    });
   } catch (err) {
-    res.json({ ok: false, message: "User not found" });
+    return res.status(401).json({ ok: false });
   }
 };
 

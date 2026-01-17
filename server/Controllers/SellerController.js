@@ -168,31 +168,30 @@ exports.getSellerBookings = async (req, res) => {
 
 // Controllers/SellerAuthController.js
 
-exports.sellerLogout = async (req, res) => {
+exports.logout = async (req, res) => {
   try {
-    res.clearCookie("seller_token", {
-      // httpOnly: true,
-      // secure: false,
-      // sameSite: "lax",
-      // path: "/",
-
-      //production
+    const cookieOptions = {
       httpOnly: true,
       secure: true,
       sameSite: "none",
-      partitioned:true,
       path: "/",
-    });
+      partitioned: true,
+    };
+
+    res.clearCookie("seller_token", cookieOptions);
+    res.clearCookie("admin_token", cookieOptions);
+    res.clearCookie("token", cookieOptions);
 
     return res.status(200).json({
       ok: true,
-      message: "Seller logged out successfully",
+      message: "Logged out successfully",
     });
-  } catch (error) {
-    console.error("Logout error:", error);
+  } catch (err) {
+    console.error("SELLER LOGOUT ERROR:", err);
     return res.status(500).json({
       ok: false,
       message: "Logout failed",
     });
   }
 };
+

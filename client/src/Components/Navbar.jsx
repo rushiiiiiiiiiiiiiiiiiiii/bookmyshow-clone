@@ -37,9 +37,17 @@ function AdminNavbar() {
       ? "text-[#f84464] font-semibold"
       : "text-gray-700 hover:text-black";
 
-  function signOut() {
-    document.cookie = "admin_token=; Max-Age=0; path=/;";
-    window.location.href = "/register";
+  async function signOut() {
+    try {
+      await fetch("https://bookmyshow-backend-mzd2.onrender.com/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      navigate("/register", { replace: true });
+    } catch (err) {
+      console.error("Admin logout failed", err);
+    }
   }
 
   return (
@@ -175,15 +183,16 @@ function SellerNavbar() {
   const [openSearch, setOpenSearch] = useState(false);
 
   async function signOut() {
-    await fetch(
-      "https://bookmyshow-backend-mzd2.onrender.com/api/seller/logout",
-      {
+    try {
+      await fetch("https://bookmyshow-backend-mzd2.onrender.com/api/seller/logout", {
         method: "POST",
         credentials: "include",
-      }
-    );
+      });
 
-    window.location.href = "/seller/signin";
+      navigate("/seller/signin", {replace:true})
+    } catch (err) {
+      console.error("Seller logout failed", err);
+    }
   }
 
   const isActive = (path) =>
@@ -304,7 +313,7 @@ function SellerNavbar() {
             Bookings
           </button>
           <button
-            onClick={handleSignOut}
+            onClick={signOut}
             className="block w-full text-left text-red-500 font-medium py-1"
           >
             Logout

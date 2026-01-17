@@ -5,12 +5,12 @@ const {
   onboard,
   getMe,
   getSellerBookings,
-  sellerLogout,
+  logout,
 } = require("../Controllers/SellerController");
 
 const auth = require("../Middlewears/auth");
 const sellerAuth = require("../Middlewears/sellerAuth");
-router.post("/logout", sellerLogout);
+router.post("/logout", logout);
 router.post("/send-otp", sendOtp);
 router.post("/verify-otp", verifyOtp);
 

@@ -2,20 +2,22 @@ const jwt = require("jsonwebtoken");
 
 module.exports = (req, res, next) => {
   try {
-    const token =
-      req.cookies.token ||
-      req.cookies.admin_token ||
-      req.cookies.seller_token;
+    let token = null;
+
+    // 🔐 STRICT priority
+    if (req.cookies.admin_token) token = req.cookies.admin_token;
+    else if (req.cookies.seller_token) token = req.cookies.seller_token;
+    else if (req.cookies.token) token = req.cookies.token;
 
     if (!token) {
-      return res.status(401).json({ ok: false, message: "Unauthorized" });
+      return res.status(401).json({ ok: false });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
     req.user = decoded; // { id, role }
+
     next();
-  } catch (err) {
-    return res.status(401).json({ ok: false, message: "Invalid token" });
+  } catch {
+    return res.status(401).json({ ok: false });
   }
 };
