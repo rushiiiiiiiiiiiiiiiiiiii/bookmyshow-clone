@@ -21,6 +21,8 @@ export default function MoviePage() {
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
   const [suggested, setSuggested] = useState([]);
+  const [submitting, setSubmitting] = useState(false);
+
 
   useEffect(() => {
     async function load() {
@@ -188,50 +190,61 @@ export default function MoviePage() {
           />
 
           <button
-            className={`${BMS_BTN} px-6 py-2 text-white rounded-lg`}
-            onClick={async () => {
-              if (!comment.trim()) {
-                toast.error("Please write a review before submitting");
-                return;
-              }
+  disabled={submitting}
+  className={`${BMS_BTN} px-6 py-2 text-white rounded-lg flex items-center justify-center gap-2 disabled:opacity-70`}
+  onClick={async () => {
+    if (!comment.trim()) {
+      toast.error("Please write a review before submitting");
+      return;
+    }
 
-              try {
-                await axios.post(
-                  "https://bookmyshow-backend-mzd2.onrender.com/api/reviews",
-                  { movie: movie.movie, rating, comment },
-                  { withCredentials: true },
-                );
+    try {
+      setSubmitting(true);
 
-                toast.success("Review submitted successfully 🎉");
+      await axios.post(
+        "https://bookmyshow-backend-mzd2.onrender.com/api/reviews",
+        { movie: movie.movie, rating, comment },
+        { withCredentials: true },
+      );
 
-                setComment("");
-                setRating(5);
+      toast.success("Review submitted successfully 🎉");
 
-                const reviewRes = await axios.get(
-                  `https://bookmyshow-backend-mzd2.onrender.com/api/reviews/${encodeURIComponent(
-                    movie.movie,
-                  )}`,
-                );
+      setComment("");
+      setRating(5);
 
-                setReviews(reviewRes.data.reviews);
-              } catch (err) {
-                // 🔐 NOT LOGGED IN
-                if (err.response?.status === 401) {
-                  toast.error("Please login to submit a review");
-                  navigate("/register"); // or "/login"
-                  return;
-                }
+      const reviewRes = await axios.get(
+        `https://bookmyshow-backend-mzd2.onrender.com/api/reviews/${encodeURIComponent(
+          movie.movie,
+        )}`,
+      );
 
-                // ❌ OTHER ERRORS
-                toast.error(
-                  err.response?.data?.message ||
-                    "Failed to submit review. Please try again.",
-                );
-              }
-            }}
-          >
-            Submit Review
-          </button>
+      setReviews(reviewRes.data.reviews);
+    } catch (err) {
+      if (err.response?.status === 401) {
+        toast.error("Please login to submit a review");
+        navigate("/register");
+        return;
+      }
+
+      toast.error(
+        err.response?.data?.message ||
+          "Failed to submit review. Please try again.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  }}
+>
+  {submitting ? (
+    <>
+      <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"></span>
+      Submitting...
+    </>
+  ) : (
+    "Submit Review"
+  )}
+</button>
+
         </div>
       </div>
 
