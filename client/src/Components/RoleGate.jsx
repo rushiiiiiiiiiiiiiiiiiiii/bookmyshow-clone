@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, Navigate } from "react-router-dom";
-import React from 'react'
+
 export default function RoleGate({ children }) {
   const location = useLocation();
   const [role, setRole] = useState("loading");
@@ -10,7 +10,10 @@ export default function RoleGate({ children }) {
       try {
         const res = await fetch(
           "https://bookmyshow-backend-mzd2.onrender.com/auth/me",
-          { credentials: "include" }
+          {
+            credentials: "include",
+            cache: "no-store",
+          },
         );
 
         const data = await res.json();
@@ -31,17 +34,20 @@ export default function RoleGate({ children }) {
 
   const path = location.pathname;
 
-  // 🚫 ADMIN → ONLY /admin/*
-  if (role === "admin" && !path.startsWith("/admin")) {
-    return <Navigate to="/admin/dashboard" replace />;
+  // 🚫 GUEST → cannot access admin/seller
+  if (
+    role === "guest" &&
+    (path.startsWith("/admin") || path.startsWith("/seller"))
+  ) {
+    return <Navigate to="/register" replace />;
   }
 
-  // 🚫 SELLER → ONLY /seller/*
+  // 🚫 SELLER → only /seller/*
   if (role === "seller" && !path.startsWith("/seller")) {
     return <Navigate to="/seller/dashboard" replace />;
   }
 
-  // 🚫 USER → NO admin/seller
+  // 🚫 USER → cannot access admin/seller
   if (
     role === "user" &&
     (path.startsWith("/admin") || path.startsWith("/seller"))

@@ -41,6 +41,7 @@ import AdminScreens from "./SuperAdmin/AdminScreens";
 import AdminShows from "./SuperAdmin/AdminShows";
 import AdminBookings from "./SuperAdmin/AdminBookings";
 import RoleGate from "./Components/RoleGate";
+import MovieReviewsPage from "./Pages/MovieReviewsPage";
 // import AdminRevenue from "./SuperAdmin/AdminRevenue";
 
 function App() {
@@ -71,6 +72,8 @@ function App() {
           <Route path="/success" element={<SuccessPage />} />
           <Route path="/buytickets/:movieName" element={<BuyTicketsPage />} />
           <Route path="/profile" element={<MyBookingsPage />} />
+          <Route path="/movie/:name/reviews" element={<MovieReviewsPage />} />
+
           {/* SELLER AUTH */}
           <Route path="/seller/signin" element={<SellerLogin />} />
           <Route path="/seller/onboard" element={<SellerOnboard />} />

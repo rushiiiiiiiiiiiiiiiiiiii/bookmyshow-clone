@@ -17,6 +17,8 @@ router.get("/theatres", auth, adminAuth, admin.getAllTheatres);
 router.get("/screens", auth, adminAuth, admin.getAllScreens);
 router.get("/shows", auth, adminAuth, admin.getAllShows);
 
+router.post("/logout", admin.logout);
+
 // BOOKINGS / REVENUE
 router.get("/bookings", auth, adminAuth, admin.getAllBookings);
 router.get("/revenue", auth, adminAuth, admin.getRevenue);

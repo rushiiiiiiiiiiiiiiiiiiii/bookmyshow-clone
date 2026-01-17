@@ -17,7 +17,7 @@ export default function SellerBookings() {
   async function loadBookings() {
     try {
       const res = await axios.get(
-        "https://bookmyshow-backend-mzd2.onrender.com/api/seller/bookings"
+        "https://bookmyshow-backend-mzd2.onrender.com/api/seller/bookings",
       );
       if (res.data.ok) setBookings(res.data.bookings);
     } catch (err) {

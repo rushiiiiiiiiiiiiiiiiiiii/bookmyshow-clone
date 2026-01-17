@@ -18,7 +18,7 @@ export default function AdminScreens() {
     try {
       setLoading(true);
       const res = await axios.get(
-        "https://bookmyshow-backend-mzd2.onrender.com/api/admin/screens"
+        "https://bookmyshow-backend-mzd2.onrender.com/api/admin/screens",
       );
       setScreens(res.data.screens || []);
     } catch (err) {

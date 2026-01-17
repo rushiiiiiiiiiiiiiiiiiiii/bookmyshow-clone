@@ -50,7 +50,7 @@ export default function PaymentPage() {
         },
         {
           withCredentials: true, // ✅ VERY IMPORTANT
-        }
+        },
       );
 
       if (!res.data.booking) {
@@ -86,6 +86,13 @@ export default function PaymentPage() {
     } finally {
       setLoading(false);
     }
+  }
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#f1f3f6]">
+        <div className="w-16 h-16 border-[5px] border-[#f84464]/20 border-t-[#f84464] rounded-full animate-spin"></div>
+      </div>
+    );
   }
 
   return (

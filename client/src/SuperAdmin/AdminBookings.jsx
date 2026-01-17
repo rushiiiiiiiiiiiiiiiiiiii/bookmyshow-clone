@@ -26,7 +26,7 @@ export default function AdminBookings() {
   async function loadBookings() {
     try {
       const res = await axios.get(
-        "https://bookmyshow-backend-mzd2.onrender.com/api/admin/bookings"
+        "https://bookmyshow-backend-mzd2.onrender.com/api/admin/bookings",
       );
       if (res.data.ok) setBookings(res.data.bookings);
     } catch (err) {

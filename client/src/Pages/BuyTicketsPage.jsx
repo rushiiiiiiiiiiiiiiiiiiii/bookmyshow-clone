@@ -19,8 +19,8 @@ export default function BuyTicketsPage() {
       try {
         const res = await axios.get(
           `https://bookmyshow-backend-mzd2.onrender.com/api/shows/movie?movie=${encodeURIComponent(
-            decodedName
-          )}`
+            decodedName,
+          )}`,
         );
 
         if (res.data.ok) {
@@ -41,8 +41,13 @@ export default function BuyTicketsPage() {
 
   const filteredShows = shows.filter((s) => s.date === activeDate);
 
-  if (loading) return <div className="p-10 text-center">Loading shows...</div>;
-
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-16 h-16 border-[5px] border-[#f84464]/20 border-t-[#f84464] rounded-full animate-spin"></div>
+      </div>
+    );
+  }
   return (
     <div className="bg-[#f5f5f5] min-h-screen">
       <Navbar />

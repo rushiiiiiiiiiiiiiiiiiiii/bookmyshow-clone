@@ -70,7 +70,7 @@ export default function ScreenList() {
 
   async function confirmDelete() {
     await axios.delete(
-      `https://bookmyshow-backend-mzd2.onrender.com/api/seller/screen/${selectedScreen._id}`
+      `https://bookmyshow-backend-mzd2.onrender.com/api/seller/screen/${selectedScreen._id}`,
     );
     setConfirmModal(false);
     setSelectedScreen(null);
@@ -86,7 +86,7 @@ export default function ScreenList() {
   async function confirmUpdate() {
     await axios.put(
       `https://bookmyshow-backend-mzd2.onrender.com/api/seller/screen/${editData._id}`,
-      editData
+      editData,
     );
     setEditModal(false);
     loadScreens();

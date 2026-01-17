@@ -53,6 +53,7 @@ exports.addShow = async (req, res) => {
       isSubtitled,
       certificate,
       maxSeatsPerBooking,
+      movieDescription,
     } = req.body;
 
     // ✅ Validation
@@ -122,7 +123,7 @@ exports.addShow = async (req, res) => {
           theatreId,
           screenId,
           movie,
-
+          movieDescription,
           poster,
           language,
           format,
@@ -418,7 +419,7 @@ exports.getShowsByCity = async (req, res) => {
       .populate("screenId", "name status");
 
     const filtered = shows.filter(
-      (s) => s.theatreId && s.screenId && (!city || s.theatreId.city === city)
+      (s) => s.theatreId && s.screenId && (!city || s.theatreId.city === city),
     );
 
     res.set("Cache-Control", "no-store"); // ⛔ disable cache
@@ -442,7 +443,7 @@ exports.getSeatLayout = async (req, res) => {
     // ✅ Remove expired locks
     const now = new Date();
     show.lockedSeats = (show.lockedSeats || []).filter(
-      (lock) => lock.expiresAt > now
+      (lock) => lock.expiresAt > now,
     );
 
     await show.save(); // update DB after cleanup
@@ -532,5 +533,36 @@ exports.getShowById = async (req, res) => {
   } catch (err) {
     console.error("GET SHOW ID ERROR:", err);
     res.status(500).json({ ok: false });
+  }
+};
+
+// 🔥 GET SUGGESTED MOVIES (EXCEPT CURRENT)
+exports.getSuggestedMovies = async (req, res) => {
+  try {
+    const { exclude } = req.query;
+
+    if (!exclude) {
+      return res.status(400).json({
+        ok: false,
+        message: "Exclude movie required",
+      });
+    }
+
+    const movies = await Show.find({
+      movie: { $ne: exclude },
+    })
+      .select("movie poster")
+      .limit(6);
+
+    return res.status(200).json({
+      ok: true,
+      movies,
+    });
+  } catch (err) {
+    console.error("SUGGESTED MOVIES ERROR:", err);
+    return res.status(500).json({
+      ok: false,
+      message: "Failed to fetch suggested movies",
+    });
   }
 };

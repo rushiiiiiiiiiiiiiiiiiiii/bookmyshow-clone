@@ -56,7 +56,7 @@ export default function RegisterPage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: identifier }),
-        }
+        },
       );
 
       return await res.json();
@@ -75,7 +75,7 @@ export default function RegisterPage() {
           headers: { "Content-Type": "application/json" },
           credentials: "include",
           body: JSON.stringify({ email: identifier, otp: code }),
-        }
+        },
       );
 
       return await res.json();

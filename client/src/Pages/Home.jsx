@@ -59,15 +59,15 @@ function shuffleArray(arr) {
 // ============================================================
 
 const BANNERS = [
-  "https://www.adgully.com/img/800/201712/creative_tvc.jpg",
-  "https://cdn.grabon.in/gograbon/indulge/wp-content/uploads/2023/08/ticket-purchase.jpg",
-  "https://blog.releasemyad.com/wp-content/uploads/2020/07/bookmyshow.jpg",
-  "https://images.freekaamaal.com/post_images/1582183521.png",
   "https://assets-in-gm.bmscdn.com/promotions/cms/creatives/1765883058083_popdesjan.jpg",
+  "https://cd9941cc.delivery.rocketcdn.me/wp-content/uploads/2024/06/Book-My-Show-HSBC-NEws2-Post.jpg",
+  "https://blog.releasemyad.com/wp-content/uploads/2020/07/bookmyshow.jpg",
+  "https://cdn.grabon.in/gograbon/indulge/wp-content/uploads/2023/08/ticket-purchase.jpg",
+  "https://images.freekaamaal.com/post_images/1582183521.png",
   "https://couponswala.com/blog/wp-content/uploads/2021/07/25-1-1-1024x576.jpg.webp",
   "https://in.bmscdn.com/offers/tncbanner/get-rs-100-off-on-your-tickets-take100.jpg?03072023171523",
-  "https://cd9941cc.delivery.rocketcdn.me/wp-content/uploads/2024/06/Book-My-Show-HSBC-NEws2-Post.jpg",
   "https://bsmedia.business-standard.com/_media/bs/img/article/2016-07/05/full/1467721201-5966.jpg?im=FeatureCrop,size=(826,465)",
+  "https://www.adgully.com/img/800/201712/creative_tvc.jpg",
 ];
 
 export function Hero() {
@@ -249,16 +249,18 @@ export default function Home() {
 
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
-  const carouselMovies = loading ? sampleMovies : movies;
+  // const carouselMovies = loading ? sampleMovies : movies;
 
-  const randomRecommended = shuffleArray(carouselMovies).slice(0, 10);
+  const randomRecommended =
+    movies.length > 0 ? shuffleArray(movies).slice(0, 10) : [];
+  const carouselMovies = movies;
 
   const [theatres, setTheatres] = useState([]);
   useEffect(() => {
     async function loadTheatres() {
       try {
         const res = await axios.get(
-          `https://bookmyshow-backend-mzd2.onrender.com/api/user/theatres?city=${city}`
+          `https://bookmyshow-backend-mzd2.onrender.com/api/user/theatres?city=${city}`,
         );
 
         if (res.data.ok) {
@@ -283,20 +285,16 @@ export default function Home() {
         setLoading(true);
 
         const res = await axios.get(
-          `https://bookmyshow-backend-mzd2.onrender.com/api/user/shows?city=${city}`
+          `https://bookmyshow-backend-mzd2.onrender.com/api/user/shows?city=${city}`,
         );
 
         const validShows = res.data.shows.filter(
           (s) =>
             s.status === "active" &&
-            s.theatreId &&
-            s.theatreId.status === "approved" &&
-            s.theatreId.isActive === true &&
-            s.screenId &&
-            s.screenId.status === "active"
+            s.theatreId?.status === "approved" &&
+            s.theatreId?.isActive === true &&
+            s.screenId?.status === "active",
         );
-
-        console.log("VALID SHOWS COUNT:", validShows.length);
 
         const seen = new Set();
         const list = [];
@@ -312,12 +310,10 @@ export default function Home() {
           }
         });
 
-        console.log("MOVIES LIST:", list);
-
-        setMovies(list.length ? list : sampleMovies);
+        setMovies(list); // ✅ ONLY REAL MOVIES
       } catch (err) {
         console.error("SHOW LOAD ERROR:", err);
-        setMovies(sampleMovies);
+        setMovies([]); // ❌ no mock
       } finally {
         setLoading(false);
       }
@@ -326,10 +322,17 @@ export default function Home() {
     load();
   }, [city]);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-16 h-16 border-[5px] border-[#f84464]/20 border-t-[#f84464] rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar movies={carouselMovies} />
-
       <Hero city={city} carouselMovies={carouselMovies} />
 
       {/* RECOMMENDED MOVIES */}
@@ -339,9 +342,13 @@ export default function Home() {
       />
 
       <div className="max-w-7xl mx-auto px-4 flex gap-6 overflow-x-auto pb-6">
-        {carouselMovies.map((m, i) => (
-          <MovieCard key={i} m={m} />
-        ))}
+        {carouselMovies.length === 0 ? (
+          <div className="text-gray-500 text-sm py-10">
+            No movies available in {city} right now
+          </div>
+        ) : (
+          carouselMovies.map((m, i) => <MovieCard key={i} m={m} />)
+        )}
       </div>
       {/* STREAM PROMO BANNER */}
       <div className="max-w-7xl mx-auto px-4 my-10">
@@ -370,7 +377,7 @@ export default function Home() {
             >
               {c}
             </div>
-          )
+          ),
         )}
       </div>
       {/* UPCOMING MOVIES (✅ ADDED) */}
@@ -399,7 +406,7 @@ export default function Home() {
               (t) =>
                 t.city === city &&
                 t.status === "approved" && // ✅ ADD THIS
-                t.isActive === true // ✅ ADD THIS
+                t.isActive === true, // ✅ ADD THIS
             )
             .map((t) => (
               <TheaterCard
@@ -419,11 +426,11 @@ export default function Home() {
         viewAllTo="/shows?type=recommended"
       />
 
-      <div className="max-w-7xl mx-auto px-4 flex gap-6 overflow-x-auto pb-10">
+      {/* <div className="max-w-7xl mx-auto px-4 flex gap-6 overflow-x-auto pb-10">
         {randomRecommended.map((m, i) => (
           <MovieCard key={i} m={m} />
         ))}
-      </div>
+      </div> */}
 
       <Footer />
     </div>

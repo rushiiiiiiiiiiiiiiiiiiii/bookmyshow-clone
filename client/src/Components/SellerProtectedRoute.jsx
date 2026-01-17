@@ -14,7 +14,7 @@ export default function SellerProtectedRoute({ children }) {
           "https://bookmyshow-backend-mzd2.onrender.com/api/seller/me",
           {
             credentials: "include",
-          }
+          },
         );
 
         const data = await res.json();

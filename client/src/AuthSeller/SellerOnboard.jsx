@@ -28,7 +28,7 @@ export default function SellerOnboard() {
       const res = await axios.post(
         "https://bookmyshow-backend-mzd2.onrender.com/api/seller/onboard",
         { bizName, businessType, address, city, pincode, phone },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       setSaving(false);

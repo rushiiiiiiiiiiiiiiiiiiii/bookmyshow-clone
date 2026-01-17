@@ -22,7 +22,7 @@ export default function AdminTheatres() {
     try {
       setLoading(true);
       const res = await axios.get(
-        "https://bookmyshow-backend-mzd2.onrender.com/api/admin/theatres"
+        "https://bookmyshow-backend-mzd2.onrender.com/api/admin/theatres",
       );
       setTheatres(res.data.theatres || []);
     } catch (err) {
@@ -42,7 +42,7 @@ export default function AdminTheatres() {
     try {
       await axios.put(
         `https://bookmyshow-backend-mzd2.onrender.com/api/admin/theatre/${selectedTheatre._id}/status`,
-        { status: action }
+        { status: action },
       );
       setModalOpen(false);
       setSelectedTheatre(null);

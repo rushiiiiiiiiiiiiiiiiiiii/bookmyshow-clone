@@ -81,7 +81,7 @@ export default function AddTheatre() {
 
       const res = await axios.post(
         "https://bookmyshow-backend-mzd2.onrender.com/api/seller/theatre",
-        payload
+        payload,
       );
 
       if (res.data.ok) {

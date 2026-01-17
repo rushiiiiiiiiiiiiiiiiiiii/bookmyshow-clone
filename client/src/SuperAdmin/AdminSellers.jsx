@@ -21,7 +21,7 @@ export default function AdminSellers() {
     try {
       setLoading(true);
       const res = await axios.get(
-        "https://bookmyshow-backend-mzd2.onrender.com/api/admin/sellers"
+        "https://bookmyshow-backend-mzd2.onrender.com/api/admin/sellers",
       );
       setSellers(res.data.sellers || []);
     } catch (err) {
@@ -47,7 +47,7 @@ export default function AdminSellers() {
     try {
       await axios.put(
         `https://bookmyshow-backend-mzd2.onrender.com/api/admin/seller/${selectedSeller._id}/status`,
-        { status: nextStatus }
+        { status: nextStatus },
       );
       closeModal();
       loadSellers();

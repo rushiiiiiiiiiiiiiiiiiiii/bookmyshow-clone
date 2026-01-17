@@ -32,6 +32,7 @@ export default function AddShow() {
   const [form, setForm] = useState({
     movie: "",
     poster: "",
+    movieDescription: "",
     language: "English",
     format: "2D",
     startDate: "",
@@ -58,7 +59,7 @@ export default function AddShow() {
   async function loadScreens() {
     try {
       const res = await axios.get(
-        `https://bookmyshow-backend-mzd2.onrender.com/api/seller/screens/${theatreId}`
+        `https://bookmyshow-backend-mzd2.onrender.com/api/seller/screens/${theatreId}`,
       );
       if (res.data.ok) setScreens(res.data.screens);
     } catch {
@@ -112,7 +113,7 @@ export default function AddShow() {
       setLoading(true);
       const res = await axios.post(
         `https://bookmyshow-backend-mzd2.onrender.com/api/seller/show/${theatreId}`,
-        form
+        form,
       );
 
       if (res.data.ok) {
@@ -179,6 +180,14 @@ export default function AddShow() {
                 value={form.movie}
                 onChange={handleChange}
                 className="border p-2 rounded sm:col-span-2"
+              />
+              <textarea
+                name="movieDescription"
+                value={form.movieDescription}
+                onChange={handleChange}
+                placeholder="Movie Description"
+                rows={4}
+                className="border p-2 rounded sm:col-span-2 resize-none"
               />
 
               <select

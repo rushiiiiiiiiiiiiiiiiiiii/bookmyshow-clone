@@ -16,7 +16,7 @@ export default function RootRouter() {
       try {
         if (document.cookie.includes("seller_token=")) {
           const res = await axios.get(
-            "https://bookmyshow-backend-mzd2.onrender.com/api/seller/me"
+            "https://bookmyshow-backend-mzd2.onrender.com/api/seller/me",
           );
 
           if (res.data.ok && res.data.seller) {

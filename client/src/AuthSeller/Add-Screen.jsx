@@ -40,7 +40,7 @@ export default function AddScreen() {
 
       const res = await axios.post(
         `https://bookmyshow-backend-mzd2.onrender.com/api/seller/screen/${theatreId}`,
-        payload
+        payload,
       );
 
       if (res.data.ok) {

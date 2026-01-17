@@ -24,7 +24,7 @@ const SetupName = () => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        }
+        },
       );
 
       toast.success("Welcome!");

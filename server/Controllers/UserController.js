@@ -88,7 +88,7 @@ exports.verifyOtp = async (req, res) => {
         role: user.role,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
 
     // Role-based cookie name
@@ -102,7 +102,7 @@ exports.verifyOtp = async (req, res) => {
       secure: true,
       sameSite: "none",
       path: "/",
-      partitioned:true,
+      partitioned: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -130,7 +130,6 @@ exports.verifyOtp = async (req, res) => {
     });
   }
 };
-
 
 // LOGOUT (USER / ADMIN / SELLER)
 exports.logout = async (req, res) => {
@@ -161,9 +160,6 @@ exports.logout = async (req, res) => {
   }
 };
 
-
-
-
 // SET NAME
 exports.setName = async (req, res) => {
   try {
@@ -183,11 +179,17 @@ exports.setName = async (req, res) => {
   }
 };
 
-// GET LOGGED-IN USER
-// GET LOGGED-IN USER (ROLE AWARE)
 exports.getMe = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-__v");
+    const token =
+      req.cookies.token || req.cookies.admin_token || req.cookies.seller_token;
+
+    if (!token) {
+      return res.status(401).json({ ok: false });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id).select("-__v");
 
     if (!user) {
       return res.status(401).json({ ok: false });
@@ -202,9 +204,7 @@ exports.getMe = async (req, res) => {
         name: user.name,
       },
     });
-  } catch (err) {
+  } catch {
     return res.status(401).json({ ok: false });
   }
 };
-
-// LOGOUT (USER / ADMIN)

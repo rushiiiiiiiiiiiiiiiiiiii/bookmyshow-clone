@@ -24,7 +24,7 @@ export default function AdminShows() {
     try {
       setLoading(true);
       const res = await axios.get(
-        "https://bookmyshow-backend-mzd2.onrender.com/api/admin/shows"
+        "https://bookmyshow-backend-mzd2.onrender.com/api/admin/shows",
       );
       if (res.data.ok) {
         const grouped = groupShows(res.data.shows);

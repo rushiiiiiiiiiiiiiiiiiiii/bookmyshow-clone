@@ -50,7 +50,7 @@ export default function ShowsList() {
 
   async function confirmCancel() {
     await axios.delete(
-      `https://bookmyshow-backend-mzd2.onrender.com/api/seller/show/${selectedShow._id}`
+      `https://bookmyshow-backend-mzd2.onrender.com/api/seller/show/${selectedShow._id}`,
     );
     setShowModal(false);
     setSelectedShow(null);
@@ -74,7 +74,7 @@ export default function ShowsList() {
           status: editData.status,
           language: editData.language,
           format: editData.format,
-        }
+        },
       );
       setEditModal(false);
       loadShows();

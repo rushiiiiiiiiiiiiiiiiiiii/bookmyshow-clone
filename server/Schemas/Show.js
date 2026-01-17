@@ -10,7 +10,7 @@ const lockedSeatSchema = new mongoose.Schema(
     },
     expiresAt: { type: Date, required: true },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const ShowSchema = new mongoose.Schema(
@@ -31,6 +31,11 @@ const ShowSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
+    },
+    movieDescription: {
+      type: String,
+      trim: true,
+      maxlength: 2000,
     },
 
     language: {
@@ -114,13 +119,13 @@ const ShowSchema = new mongoose.Schema(
     // ✅ TEMPORARY LOCKS (NEW)
     lockedSeats: [lockedSeatSchema],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // prevent duplicate shows on same screen at same time
 ShowSchema.index(
   { theatreId: 1, screenId: 1, date: 1, time: 1 },
-  { unique: true }
+  { unique: true },
 );
 
 module.exports = mongoose.model("Show", ShowSchema);

@@ -13,7 +13,9 @@ export default function ProtectedRoute({ children }) {
       try {
         const res = await fetch(
           "https://bookmyshow-backend-mzd2.onrender.com/auth/me",
-          { credentials: "include" }
+          {
+            credentials: "include",
+          },
         );
 
         const data = await res.json();

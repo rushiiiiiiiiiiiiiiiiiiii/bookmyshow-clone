@@ -34,16 +34,16 @@ export default function SellerDashboard() {
       const [theatresRes, screensRes, showsRes, bookingsRes] =
         await Promise.all([
           axios.get(
-            "https://bookmyshow-backend-mzd2.onrender.com/api/seller/theatres"
+            "https://bookmyshow-backend-mzd2.onrender.com/api/seller/theatres",
           ),
           axios.get(
-            "https://bookmyshow-backend-mzd2.onrender.com/api/seller/screens"
+            "https://bookmyshow-backend-mzd2.onrender.com/api/seller/screens",
           ),
           axios.get(
-            "https://bookmyshow-backend-mzd2.onrender.com/api/seller/shows"
+            "https://bookmyshow-backend-mzd2.onrender.com/api/seller/shows",
           ),
           axios.get(
-            "https://bookmyshow-backend-mzd2.onrender.com/api/seller/bookings"
+            "https://bookmyshow-backend-mzd2.onrender.com/api/seller/bookings",
           ),
         ]);
 
@@ -53,7 +53,7 @@ export default function SellerDashboard() {
 
       const totalEarnings = bookings
         .filter(
-          (b) => b.paymentStatus === "success" && b.status === "confirmed"
+          (b) => b.paymentStatus === "success" && b.status === "confirmed",
         )
         .reduce((sum, b) => sum + (b.amount || 0), 0);
 

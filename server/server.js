@@ -32,6 +32,9 @@ app.use("/api", require("./Routes/BookingRoutes"));
 app.use("/api/admin", require("./Routes/AdminRoutes"));
 app.use("/auth", Authrouter);
 app.use("/api/seller", require("./Routes/SellerRoutes"));
+app.use("/api/reviews", require("./Routes/reviewRoutes"));
+app.use("/api", require("./Routes/ShowRoutes"));
+
 
 // app.get("/test-mail", async (req, res) => {
 //   try {

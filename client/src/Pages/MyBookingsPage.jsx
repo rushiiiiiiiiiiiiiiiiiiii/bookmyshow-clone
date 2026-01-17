@@ -14,7 +14,7 @@ export default function MyBookingsPage() {
           "https://bookmyshow-backend-mzd2.onrender.com/api/my-bookings",
           {
             withCredentials: true,
-          }
+          },
         );
         setBookings(res.data.bookings || []);
       } catch (err) {

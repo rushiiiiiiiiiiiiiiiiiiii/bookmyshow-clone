@@ -38,7 +38,7 @@ export default function TheaterList() {
     try {
       setLoading(true);
       const res = await axios.get(
-        "https://bookmyshow-backend-mzd2.onrender.com/api/seller/theatres"
+        "https://bookmyshow-backend-mzd2.onrender.com/api/seller/theatres",
       );
       if (res.data.ok) setTheatres(res.data.theatres);
       else setError("Failed to load theatres");
@@ -59,7 +59,7 @@ export default function TheaterList() {
   async function confirmDelete() {
     try {
       await axios.delete(
-        `https://bookmyshow-backend-mzd2.onrender.com/api/seller/theatre/${selectedTheatre._id}`
+        `https://bookmyshow-backend-mzd2.onrender.com/api/seller/theatre/${selectedTheatre._id}`,
       );
       setConfirmModal(false);
       setSelectedTheatre(null);
@@ -98,7 +98,7 @@ export default function TheaterList() {
     try {
       await axios.put(
         `https://bookmyshow-backend-mzd2.onrender.com/api/seller/theatre/${selectedTheatre._id}`,
-        editData
+        editData,
       );
 
       setEditModal(false);

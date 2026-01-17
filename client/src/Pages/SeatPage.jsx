@@ -32,30 +32,34 @@ function Legend({ color, border, label, style }) {
 // ------------------------------------------------
 // SEAT
 // ------------------------------------------------
-function Seat({ id, booked, selected, toggleSeat }) {
+function Seat({ id, booked, selected, toggleSeat, loading }) {
   const isBooked = booked.includes(id);
   const isSelected = selected.includes(id);
 
-  let style =
+  let base =
     "w-7 h-6 mx-1 mb-1 rounded-t-md transition-all duration-150 flex items-center justify-center text-[9px] font-semibold select-none";
 
   if (isBooked) {
-    style += " bg-gray-500 cursor-not-allowed text-white";
+    base += " bg-gray-500 cursor-not-allowed text-white";
   } else if (isSelected) {
-    style += " shadow-md scale-105 text-white";
+    base += " shadow-md scale-105 text-white";
   } else {
-    style +=
+    base +=
       " bg-white border border-gray-400 cursor-pointer hover:bg-gray-200 text-gray-800";
   }
 
   return (
     <div
       title={id}
-      className={style}
+      className={base}
       style={isSelected ? { backgroundColor: BMS_GREEN } : {}}
       onClick={() => toggleSeat(id)}
     >
-      {id.slice(1)}
+      {loading ? (
+        <div className="w-3.5 h-3.5 border-[2.5px] border-[#f84464]/30 border-t-[#f84464] rounded-full animate-spin"></div>
+      ) : (
+        id.slice(1)
+      )}
     </div>
   );
 }
@@ -72,6 +76,7 @@ export default function SeatPage() {
   const [screen, setScreen] = useState(null);
   const [show, setShow] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [lockingSeats, setLockingSeats] = useState([]);
 
   // -------------------------
   // LOAD DATA (SHOW + SEATS)
@@ -80,7 +85,7 @@ export default function SeatPage() {
     try {
       // ✅ MOVIE DETAILS
       const showRes = await axios.get(
-        `https://bookmyshow-backend-mzd2.onrender.com/api/shows/${id}`
+        `https://bookmyshow-backend-mzd2.onrender.com/api/shows/${id}`,
       );
       if (showRes.data.ok) {
         setShow(showRes.data.show);
@@ -88,15 +93,15 @@ export default function SeatPage() {
 
       // ✅ SEAT DATA (booked + locked)
       const seatRes = await axios.get(
-        `https://bookmyshow-backend-mzd2.onrender.com/api/user/seats/${id}`
+        `https://bookmyshow-backend-mzd2.onrender.com/api/user/seats/${id}`,
       );
 
       if (seatRes.data.ok) {
         const bookedArr = (seatRes.data.booked || []).map(
-          (seat) => seat.seatNumber
+          (seat) => seat.seatNumber,
         );
         const lockedArr = (seatRes.data.locked || []).map(
-          (seat) => seat.seatNumber
+          (seat) => seat.seatNumber,
         );
 
         const allBlocked = Array.from(new Set([...bookedArr, ...lockedArr]));
@@ -136,11 +141,12 @@ export default function SeatPage() {
   // SEAT TOGGLE + LOCK CALL
   // -------------------------
   async function toggleSeat(seat) {
-    if (booked.includes(seat)) return; // cannot click booked/locked
+    if (booked.includes(seat)) return;
+    if (lockingSeats.includes(seat)) return; // ⛔ prevent double click
 
     const max = show?.maxSeatsPerBooking || 1;
-
     const alreadySelected = selected.includes(seat);
+
     if (!alreadySelected && selected.length >= max) {
       toast.error(`You can only book ${max} ticket(s) for this show.`);
       return;
@@ -150,45 +156,42 @@ export default function SeatPage() {
       ? selected.filter((s) => s !== seat)
       : [...selected, seat];
 
-    // If user deselected everything, just clear and return (no lock)
+    // if deselecting everything
     if (newSelected.length === 0) {
       setSelected([]);
       return;
     }
 
     try {
+      // 🔥 mark seat as loading
+      setLockingSeats((prev) => [...prev, seat]);
+
       const res = await axios.post(
         "https://bookmyshow-backend-mzd2.onrender.com/api/lock-seats",
         {
           showId: id,
           seats: newSelected,
         },
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true },
       );
 
       if (!res.data.ok) {
-        toast.error(
-          res.data.msg ||
-            "Some seats just got locked or booked. Please choose other seats."
-        );
-        // refresh seat layout to show latest locks
+        toast.error("Seat just got locked. Choose another.");
         await loadSeatData();
         return;
       }
 
       setSelected(newSelected);
     } catch (err) {
-      console.error("LOCK SEAT ERROR:", err);
-
       if (err.response?.status === 401) {
         toast.error("Please login to select seats.");
         navigate("/register");
         return;
       }
-
-      toast.error("Failed to lock seats. Please try again.");
+      toast.error("Failed to lock seat");
+    } finally {
+      // ✅ remove loading state
+      setLockingSeats((prev) => prev.filter((s) => s !== seat));
     }
   }
 
@@ -197,12 +200,11 @@ export default function SeatPage() {
   // -------------------------
   if (loading) {
     return (
-      <div className="min-h-screen flex justify-center items-center">
-        Loading seats...
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-16 h-16 border-[5px] border-[#f84464]/20 border-t-[#f84464] rounded-full animate-spin"></div>
       </div>
     );
   }
-
   if (!screen || !show) {
     return <div className="p-10 text-center">Failed to load seat layout</div>;
   }
@@ -296,6 +298,7 @@ export default function SeatPage() {
                       booked={booked}
                       selected={selected}
                       toggleSeat={toggleSeat}
+                      loading={lockingSeats.includes(seat)}
                     />
                   );
                 })}
@@ -311,6 +314,7 @@ export default function SeatPage() {
                       booked={booked}
                       selected={selected}
                       toggleSeat={toggleSeat}
+                      loading={lockingSeats.includes(seat)}
                     />
                   );
                 })}

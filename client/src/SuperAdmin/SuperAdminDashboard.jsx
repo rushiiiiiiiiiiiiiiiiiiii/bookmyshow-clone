@@ -38,19 +38,19 @@ export default function SuperAdminDashboard() {
       const [sellersRes, theatresRes, screensRes, showsRes, bookingsRes] =
         await Promise.all([
           axios.get(
-            "https://bookmyshow-backend-mzd2.onrender.com/api/admin/sellers"
+            "https://bookmyshow-backend-mzd2.onrender.com/api/admin/sellers",
           ),
           axios.get(
-            "https://bookmyshow-backend-mzd2.onrender.com/api/admin/theatres"
+            "https://bookmyshow-backend-mzd2.onrender.com/api/admin/theatres",
           ),
           axios.get(
-            "https://bookmyshow-backend-mzd2.onrender.com/api/admin/screens"
+            "https://bookmyshow-backend-mzd2.onrender.com/api/admin/screens",
           ),
           axios.get(
-            "https://bookmyshow-backend-mzd2.onrender.com/api/admin/shows"
+            "https://bookmyshow-backend-mzd2.onrender.com/api/admin/shows",
           ),
           axios.get(
-            "https://bookmyshow-backend-mzd2.onrender.com/api/admin/bookings"
+            "https://bookmyshow-backend-mzd2.onrender.com/api/admin/bookings",
           ),
         ]);
 

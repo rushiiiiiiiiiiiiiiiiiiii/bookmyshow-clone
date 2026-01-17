@@ -11,7 +11,7 @@ export default function PublicRoute({ children }) {
           "https://bookmyshow-backend-mzd2.onrender.com/auth/me",
           {
             credentials: "include",
-          }
+          },
         );
 
         const data = await res.json();

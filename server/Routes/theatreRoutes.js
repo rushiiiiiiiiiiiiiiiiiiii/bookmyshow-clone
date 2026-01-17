@@ -42,6 +42,7 @@ const { testMail } = require("../Controllers/testMail");
 /* ============================
    ✅ THEATRE ROUTES
 ============================ */
+
 router.post("/seller/theatre", addTheatre);
 router.get("/seller/theatres", getTheatres);
 router.get("/seller/theatre/:id", getTheatreById);
@@ -69,8 +70,7 @@ router.delete("/seller/show/:id", deleteShow);
 router.put("/seller/show/:id", updateShow);
 router.get("/user/shows", getShowsByCity);
 router.get("/user/seats/:id", getSeatLayout);
-router.get("/shows/movie", getShowsByMovie);
-router.get("/shows/:id", getShowById);
+
 
 //BOOKINING ROUTES
 

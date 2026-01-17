@@ -36,15 +36,17 @@ function AdminNavbar() {
     location.pathname.startsWith(path)
       ? "text-[#f84464] font-semibold"
       : "text-gray-700 hover:text-black";
-
   async function signOut() {
     try {
-      await fetch("https://bookmyshow-backend-mzd2.onrender.com/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
+      await fetch(
+        "https://bookmyshow-backend-mzd2.onrender.com/api/admin/logout",
+        {
+          method: "POST",
+          credentials: "include",
+        },
+      );
 
-      navigate("/register", { replace: true });
+      window.location.href = "/register"; // 🔥 force reload
     } catch (err) {
       console.error("Admin logout failed", err);
     }
@@ -184,12 +186,15 @@ function SellerNavbar() {
 
   async function signOut() {
     try {
-      await fetch("https://bookmyshow-backend-mzd2.onrender.com/api/seller/logout", {
-        method: "POST",
-        credentials: "include",
-      });
+      await fetch(
+        "https://bookmyshow-backend-mzd2.onrender.com/api/seller/logout",
+        {
+          method: "POST",
+          credentials: "include",
+        },
+      );
 
-      navigate("/seller/signin", {replace:true})
+      navigate("/seller/signin", { replace: true });
     } catch (err) {
       console.error("Seller logout failed", err);
     }
@@ -352,7 +357,7 @@ function UserNavbar({ movies = [] }) {
           "https://bookmyshow-backend-mzd2.onrender.com/auth/me",
           {
             credentials: "include",
-          }
+          },
         );
 
         setLoggedIn(res.ok);
