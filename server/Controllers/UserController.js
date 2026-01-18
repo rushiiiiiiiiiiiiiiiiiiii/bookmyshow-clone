@@ -114,7 +114,7 @@ exports.verifyOtp = async (req, res) => {
       secure: true,
       sameSite: "none",
       path: "/",
-      // partitioned: true,
+      partitioned: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -151,7 +151,7 @@ exports.logout = async (req, res) => {
       secure: true,
       sameSite: "none",
       path: "/",
-      // partitioned: true,
+      partitioned: true,
     };
 
     // 🧹 CLEAR ALL AUTH COOKIES
