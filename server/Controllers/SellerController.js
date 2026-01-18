@@ -21,12 +21,24 @@ exports.sendOtp = async (req, res) => {
 
     await sendOtpEmail({
       to: email,
-      subject: "Your Seller OTP",
+      subject: "BookMyShow Clone – Seller Demo OTP",
       html: `
-        <h3>Your Seller Login OTP</h3>
-        <p style="font-size:22px;font-weight:bold">${otp}</p>
-        <p>This OTP is valid for 5 minutes. Do NOT share it.</p>
-      `,
+    <div style="font-family:Arial,sans-serif">
+      <h3>Seller Login – Demo Project</h3>
+
+      <p style="font-size:14px;color:#555">
+        This OTP is for a <b>student demonstration project</b> only.
+      </p>
+
+      <p style="font-size:26px;font-weight:bold;letter-spacing:2px">
+        ${otp}
+      </p>
+
+      <p style="font-size:12px;color:#777">
+        Valid for 5 minutes. Do not share.
+      </p>
+    </div>
+  `,
     });
 
     return res.json({ ok: true, message: "OTP sent" });
@@ -69,20 +81,20 @@ exports.verifyOtp = async (req, res) => {
     const token = jwt.sign(
       { id: seller._id, role: "seller" },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
 
     //production
     res
-    .cookie("seller_token", token, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
-    path: "/",
-    partitioned: true,
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    })
-    .json({ ok: true, isNewSeller });
+      .cookie("seller_token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        path: "/",
+        partitioned: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      })
+      .json({ ok: true, isNewSeller });
 
     //local
     // res
@@ -95,7 +107,6 @@ exports.verifyOtp = async (req, res) => {
     //     maxAge: 7 * 24 * 60 * 60 * 1000,
     //   })
     //   .json({ ok: true, isNewSeller });
-
   } catch (err) {
     console.error("VERIFY OTP ERROR:", err);
     return res.status(500).json({ ok: false, message: "Error verifying OTP" });
@@ -145,7 +156,6 @@ exports.getSellerMe = async (req, res) => {
     res.json({ ok: false });
   }
 };
-
 
 exports.getSellerBookings = async (req, res) => {
   try {

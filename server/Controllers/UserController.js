@@ -19,12 +19,24 @@ exports.sendOtp = async (req, res) => {
 
     await sendOtpEmail({
       to: email,
-      subject: "Your OTP Code",
+      subject: "BookMyShow Clone – Student Project OTP",
       html: `
-        <h2>Your OTP Code</h2>
-        <p style="font-size:24px;font-weight:bold">${otp}</p>
-        <p>Valid for 5 minutes</p>
-      `,
+    <div style="font-family:Arial,sans-serif">
+      <h2>Student Project OTP</h2>
+      <p style="font-size:14px;color:#555">
+        This OTP is for an <b>educational demo project</b>.
+        No real payments or accounts are involved.
+      </p>
+
+      <p style="font-size:26px;font-weight:bold;letter-spacing:2px">
+        ${otp}
+      </p>
+
+      <p style="font-size:12px;color:#777">
+        Valid for 5 minutes. Please do not share this OTP.
+      </p>
+    </div>
+  `,
     });
 
     res.json({ ok: true, message: "OTP sent successfully" });
@@ -204,4 +216,3 @@ exports.getMe = async (req, res) => {
     return res.status(401).json({ ok: false });
   }
 };
-

@@ -176,12 +176,21 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="w-full max-w-sm bg-white rounded-lg shadow-2xl p-6 sm:p-8">
+        <div className="bg-yellow-100 text-yellow-900 text-xs p-2 rounded mb-4 text-center">
+          ⚠️ This is a <b>student demo project</b>. No real payments or personal
+          data are collected.
+        </div>
+
         <div className="text-center mb-6">
-          <span className="text-3xl font-bold text-gray-800">BookMyShow</span>
+          <span className="text-3xl font-bold text-gray-800">
+            BookMyShow Clone
+          </span>
         </div>
 
         <h2 className="text-2xl font-bold mb-1">Sign in / Sign up</h2>
-        <p className="text-sm text-gray-500 mb-6">to manage your bookings</p>
+        <p className="text-sm text-gray-500 mb-6">
+          Student Project – Movie Booking Demo
+        </p>
 
         {/* SWITCH */}
         <div className="flex gap-2 mb-6 border border-gray-200 rounded-md p-1 bg-gray-100">
