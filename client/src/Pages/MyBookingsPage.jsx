@@ -40,14 +40,17 @@ export default function MyBookingsPage() {
 
   const isExpired = (booking) => {
     // Combine date and time string to create a comparable Date object
-    const showDateTime = new Date(`${booking.date.split("T")[0]}T${booking.time}`);
+    const showDateTime = new Date(
+      `${booking.date.split("T")[0]}T${booking.time}`,
+    );
     return showDateTime < now || booking.status === "cancelled";
   };
 
   const recentBookings = bookings.filter((b) => !isExpired(b));
   const historyBookings = bookings.filter((b) => isExpired(b));
 
-  const displayBookings = activeTab === "recent" ? recentBookings : historyBookings;
+  const displayBookings =
+    activeTab === "recent" ? recentBookings : historyBookings;
 
   if (loading) {
     return (
@@ -77,7 +80,7 @@ export default function MyBookingsPage() {
                 : "text-gray-500 hover:text-gray-700"
             }`}
           >
-            <Ticket size={18} /> Recent
+            <Ticket size={18} /> Active Booking{" "}
           </button>
           <button
             onClick={() => setActiveTab("history")}
@@ -93,8 +96,8 @@ export default function MyBookingsPage() {
 
         {displayBookings.length === 0 && (
           <div className="bg-white rounded-xl p-10 text-center text-gray-500 shadow-sm">
-            {activeTab === "recent" 
-              ? "You have no upcoming shows 🍿" 
+            {activeTab === "recent"
+              ? "You have no upcoming shows 🍿"
               : "Your booking history is empty."}
           </div>
         )}
@@ -129,7 +132,7 @@ export default function MyBookingsPage() {
 
 function BookingCard({ booking, onView, isHistory }) {
   return (
-    <div 
+    <div
       className={`bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden 
       ${isHistory ? "grayscale opacity-75 border-gray-200" : "border-transparent"}`}
     >
@@ -195,7 +198,9 @@ function BookingCard({ booking, onView, isHistory }) {
 function TicketModal({ booking, onClose, isHistory }) {
   return (
     <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-4 backdrop-blur-sm">
-      <div className={`bg-white w-full max-w-md rounded-3xl shadow-2xl relative overflow-hidden transition-all ${isHistory ? 'grayscale' : ''}`}>
+      <div
+        className={`bg-white w-full max-w-md rounded-3xl shadow-2xl relative overflow-hidden transition-all ${isHistory ? "grayscale" : ""}`}
+      >
         {/* CLOSE */}
         <button
           onClick={onClose}
@@ -214,9 +219,7 @@ function TicketModal({ booking, onClose, isHistory }) {
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
 
           <div className="absolute bottom-4 left-4 right-4 text-white">
-            <h2 className="text-xl font-bold leading-tight">
-              {booking.movie}
-            </h2>
+            <h2 className="text-xl font-bold leading-tight">{booking.movie}</h2>
             <p className="text-xs opacity-90 mt-1">
               {booking.theatre?.name} · {booking.screen?.name}
             </p>
@@ -241,9 +244,7 @@ function TicketModal({ booking, onClose, isHistory }) {
           <div className="flex justify-between text-sm">
             <div>
               <p className="text-gray-500 text-xs">Seats</p>
-              <p className="font-semibold">
-                {booking.seats.join(", ")}
-              </p>
+              <p className="font-semibold">{booking.seats.join(", ")}</p>
             </div>
             <div className="text-right">
               <p className="text-gray-500 text-xs">Amount</p>
@@ -271,8 +272,12 @@ function TicketModal({ booking, onClose, isHistory }) {
                 <div className="inline-flex items-center justify-center w-20 h-20 rounded-xl border bg-gray-50 mx-auto">
                   <QrCode size={44} className="text-gray-700" />
                 </div>
-                <p className="text-xs text-gray-500 mt-2">Show this code at entrance</p>
-                <p className="mt-1 font-mono text-sm font-bold tracking-wide">{booking.bookingToken}</p>
+                <p className="text-xs text-gray-500 mt-2">
+                  Show this code at entrance
+                </p>
+                <p className="mt-1 font-mono text-sm font-bold tracking-wide">
+                  {booking.bookingToken}
+                </p>
               </>
             )}
           </div>
