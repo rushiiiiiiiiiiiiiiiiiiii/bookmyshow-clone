@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { LogOut } from "lucide-react";
 import SearchModal from "./SearchModal";
 import { MapPin } from "lucide-react";
-import {toast} from 'react-hot-toast'
+import { toast } from "react-hot-toast";
 function CityIcon({ src, name }) {
   const [error, setError] = useState(false);
 
@@ -45,7 +45,7 @@ function AdminNavbar() {
           credentials: "include",
         },
       );
-      navigate("/register", { replace: true });
+      window.location.href = "/register"; 
     } catch (err) {
       console.error("Admin logout failed", err);
     }
@@ -401,7 +401,7 @@ function UserNavbar({ movies = [] }) {
       setShowProfileMenu(false);
       setMobileMenu(false);
       navigate("/");
-      toast
+      toast;
     } catch (error) {
       console.error("Logout failed", error);
     }

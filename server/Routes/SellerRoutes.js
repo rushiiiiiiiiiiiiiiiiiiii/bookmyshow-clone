@@ -14,7 +14,8 @@ router.post("/logout", logout);
 router.post("/send-otp", sendOtp);
 router.post("/verify-otp", verifyOtp);
 router.post("/onboard", auth, sellerAuth, onboard);
-router.get("/me", auth, sellerAuth, getMe);
+router.get("/me", auth, getSellerMe);
+
 router.get("/bookings", auth, sellerAuth, getSellerBookings);
 
 module.exports = router;

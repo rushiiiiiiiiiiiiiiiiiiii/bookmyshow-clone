@@ -129,16 +129,23 @@ exports.onboard = async (req, res) => {
   }
 };
 
-exports.getMe = async (req, res) => {
+exports.getSellerMe = async (req, res) => {
   try {
+    if (req.user.role !== "seller") {
+      return res.status(403).json({ ok: false });
+    }
+
     const seller = await Seller.findById(req.user.id);
-    if (!seller) return res.json({ ok: false, seller: null });
+    if (!seller) {
+      return res.json({ ok: false });
+    }
 
     res.json({ ok: true, seller });
-  } catch (err) {
-    res.json({ ok: false, seller: null });
+  } catch {
+    res.json({ ok: false });
   }
 };
+
 
 exports.getSellerBookings = async (req, res) => {
   try {

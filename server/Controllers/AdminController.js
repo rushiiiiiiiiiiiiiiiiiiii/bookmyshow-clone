@@ -367,10 +367,12 @@ exports.logout = async (req, res) => {
   try {
     res.clearCookie("admin_token", {
       httpOnly: true,
-      secure: true,        // 🔥 MUST MATCH LOGIN
-      sameSite: "none",    // 🔥 MUST MATCH LOGIN
+      secure: true,
+      sameSite: "none",
       path: "/",
+      partitioned: true,
     });
+    
 
     return res.status(200).json({
       ok: true,

@@ -181,16 +181,12 @@ exports.setName = async (req, res) => {
 
 exports.getMe = async (req, res) => {
   try {
-    const token =
-      req.cookies.token || req.cookies.admin_token || req.cookies.seller_token;
-
-    if (!token) {
-      return res.status(401).json({ ok: false });
+    // 🔐 req.user is already verified by middleware
+    if (req.user.role !== "user" && req.user.role !== "admin") {
+      return res.status(403).json({ ok: false });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id).select("-__v");
-
+    const user = await User.findById(req.user.id).select("-__v");
     if (!user) {
       return res.status(401).json({ ok: false });
     }
@@ -208,3 +204,4 @@ exports.getMe = async (req, res) => {
     return res.status(401).json({ ok: false });
   }
 };
+

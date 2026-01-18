@@ -11,9 +11,7 @@ export default function AdminRoute({ children }) {
       try {
         await axios.get(
           "https://bookmyshow-backend-mzd2.onrender.com/api/admin/dashboard",
-          {
-            withCredentials: true,
-          },
+          { withCredentials: true }
         );
         setAllowed(true);
       } catch {
@@ -22,15 +20,12 @@ export default function AdminRoute({ children }) {
         setLoading(false);
       }
     }
-
     check();
   }, []);
 
   if (loading) return null;
 
-  if (!allowed) {
-    return <Navigate to="/register" replace />;
-  }
+  if (!allowed) return <Navigate to="/register" replace />;
 
   return children;
 }
