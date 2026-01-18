@@ -15,7 +15,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://book-my-show-frontend-ashen.vercel.app",
+      "https://bookmyshow-clone-kohl.vercel.app",
     ],
     credentials: true,
   })
