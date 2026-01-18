@@ -193,7 +193,7 @@ function SellerNavbar() {
         },
       );
 
-      navigate("/seller/signin", { replace: true });
+      navigate("/", { replace: true });
       window.location.reload();
     } catch (err) {
       console.error("Seller logout failed", err);
