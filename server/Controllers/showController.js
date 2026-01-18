@@ -536,33 +536,26 @@ exports.getShowById = async (req, res) => {
   }
 };
 
-// 🔥 GET SUGGESTED MOVIES (EXCEPT CURRENT)
 exports.getSuggestedMovies = async (req, res) => {
   try {
     const { exclude } = req.query;
 
-    if (!exclude) {
-      return res.status(400).json({
-        ok: false,
-        message: "Exclude movie required",
-      });
-    }
+    const movies = await Show.aggregate([
+      { $match: { movie: { $ne: exclude } } },
+      {
+        $group: {
+          _id: "$movie",
+          movie: { $first: "$movie" },
+          poster: { $first: "$poster" },
+        },
+      },
+      { $limit: 6 },
+    ]);
 
-    const movies = await Show.find({
-      movie: { $ne: exclude },
-    })
-      .select("movie poster")
-      .limit(6);
-
-    return res.status(200).json({
-      ok: true,
-      movies,
-    });
+    res.json({ ok: true, movies });
   } catch (err) {
     console.error("SUGGESTED MOVIES ERROR:", err);
-    return res.status(500).json({
-      ok: false,
-      message: "Failed to fetch suggested movies",
-    });
+    res.status(500).json({ ok: false });
   }
 };
+
