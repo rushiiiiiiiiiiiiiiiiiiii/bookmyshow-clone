@@ -27,13 +27,30 @@ export default function SellerBookings() {
     }
   }
 
-  if (loading) return <div className="p-10">Loading bookings...</div>;
+  if (loading) {
+    return (
+      <div className="min-h-screen flex bg-gray-100">
+        <SellerSidebar />
+
+        <div className="flex-1 flex flex-col overflow-y-auto no-scrollbar">
+          <SellerNavbar />
+
+          <div className="flex-1 flex items-center justify-center">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-12 h-12 border-[4px] border-[#f84464]/20 border-t-[#f84464] rounded-full animate-spin"></div>
+              <p className="text-sm text-gray-500">Loading bookings...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex bg-gray-100">
       <SellerSidebar />
 
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col overflow-y-auto no-scrollbar">
         <SellerNavbar />
 
         <div className="max-w-7xl mx-auto p-6 w-full">

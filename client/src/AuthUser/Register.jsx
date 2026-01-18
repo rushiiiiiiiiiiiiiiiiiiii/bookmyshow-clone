@@ -145,7 +145,7 @@ export default function RegisterPage() {
 
     // 🔥 ROLE-BASED REDIRECT
     if (response.role === "admin") {
-      navigate("/admin/dashboard");
+      navigate("/admin/dashboard", { replace: true });
     } else if (response.isNewUser) {
       navigate("/setup-name");
     } else {

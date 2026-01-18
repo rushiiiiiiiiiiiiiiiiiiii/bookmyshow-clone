@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, Navigate } from "react-router-dom";
-import React from "react";
-
+import React from 'react'
 export default function RoleGate({ children }) {
   const location = useLocation();
   const [role, setRole] = useState("loading");
@@ -9,7 +8,23 @@ export default function RoleGate({ children }) {
   useEffect(() => {
     async function detectRole() {
       try {
-        // 1️⃣ SELLER check
+        // 1️⃣ CHECK ADMIN / USER FIRST
+        const authRes = await fetch(
+          "https://bookmyshow-backend-mzd2.onrender.com/auth/me",
+          {
+            credentials: "include",
+            cache: "no-store",
+          }
+        );
+
+        const authData = await authRes.json();
+
+        if (authData.ok) {
+          setRole(authData.user.role); // "admin" | "user"
+          return;
+        }
+
+        // 2️⃣ CHECK SELLER
         const sellerRes = await fetch(
           "https://bookmyshow-backend-mzd2.onrender.com/api/seller/me",
           {
@@ -19,26 +34,14 @@ export default function RoleGate({ children }) {
         );
 
         const sellerData = await sellerRes.json();
+
         if (sellerData.ok) {
           setRole("seller");
           return;
         }
 
-        // 2️⃣ USER / ADMIN check
-        const res = await fetch(
-          "https://bookmyshow-backend-mzd2.onrender.com/auth/me",
-          {
-            credentials: "include",
-            cache: "no-store",
-          }
-        );
-
-        const data = await res.json();
-        if (data.ok) {
-          setRole(data.user.role); // user | admin
-        } else {
-          setRole("guest");
-        }
+        // 3️⃣ GUEST
+        setRole("guest");
       } catch {
         setRole("guest");
       }
@@ -51,18 +54,16 @@ export default function RoleGate({ children }) {
 
   const path = location.pathname;
 
-  /* ─────────────────────────────
-     🚫 ADMIN PROTECTION
-  ───────────────────────────── */
-
+  /* ───────── ADMIN RULES ───────── */
   if (role !== "admin" && path.startsWith("/admin")) {
     return <Navigate to="/register" replace />;
   }
 
-  /* ─────────────────────────────
-     🚫 USER PROTECTION
-  ───────────────────────────── */
+  if (role === "admin" && !path.startsWith("/admin")) {
+    return <Navigate to="/admin/dashboard" replace />;
+  }
 
+  /* ───────── USER RULES ───────── */
   if (
     role === "user" &&
     (path.startsWith("/admin") || path.startsWith("/seller"))
@@ -70,12 +71,9 @@ export default function RoleGate({ children }) {
     return <Navigate to="/" replace />;
   }
 
-  /* ─────────────────────────────
-     SELLER ROUTES HANDLED ELSEWHERE
-  ───────────────────────────── */
-
-  // ❌ DO NOT BLOCK SELLER HERE
-  // Seller auth MUST be handled by SellerProtectedRoute
+  /* ───────── SELLER RULES ───────── */
+  // Seller routes are protected by SellerProtectedRoute
+  // DO NOT block seller here
 
   return children;
 }

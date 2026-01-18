@@ -116,7 +116,13 @@ export default function ScreenList() {
             )}
           </div>
 
-          {loading && <p className="text-gray-500">Loading screens...</p>}
+          {loading && (
+            <div className="flex flex-col items-center justify-center py-16">
+              <div className="w-10 h-10 border-[4px] border-[#f84464]/20 border-t-[#f84464] rounded-full animate-spin"></div>
+              <p className="mt-3 text-sm text-gray-500">Loading screens...</p>
+            </div>
+          )}
+
           {error && <p className="text-red-500">{error}</p>}
 
           {!loading && screens.length === 0 && !error && (

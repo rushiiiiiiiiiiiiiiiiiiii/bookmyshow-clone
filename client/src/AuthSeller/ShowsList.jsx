@@ -97,37 +97,33 @@ export default function ShowsList() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <SellerNavbar />
+    <div className="min-h-screen bg-gray-100 flex">
+      <SellerSidebar />
 
-      <div className="flex">
-        {/* SIDEBAR DESKTOP ONLY */}
-        <div className="hidden lg:block">
-          <SellerSidebar />
-        </div>
+      <div className="flex-1 flex flex-col">
+        <SellerNavbar />
 
         <main className="flex-1 p-4 md:p-6 max-w-7xl mx-auto w-full">
           <h2 className="text-xl md:text-2xl font-bold mb-6">
             {theatreId ? "Theatre Shows" : "All Shows"}
           </h2>
 
-          {loading && (
-            <div className="bg-white p-6 rounded shadow text-center text-gray-400">
-              Loading shows...
+          {loading ? (
+            <div className="bg-white p-6 rounded shadow text-center text-gray-400 min-h-[120px] flex items-center justify-center">
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 border-[3px] border-[#f84464]/20 border-t-[#f84464] rounded-full animate-spin"></div>
+                <span>Loading shows...</span>
+              </div>
             </div>
-          )}
-
-          {error && !loading && (
+          ) : error ? (
             <div className="bg-white p-6 rounded shadow text-center text-red-500">
               {error}
             </div>
-          )}
-
-          {!loading && shows.length === 0 && !error && (
+          ) : shows.length === 0 ? (
             <div className="bg-white p-6 rounded shadow text-center text-gray-500">
               No shows scheduled.
             </div>
-          )}
+          ) : null}
 
           {/* DESKTOP TABLE */}
           {!loading && shows.length > 0 && (
