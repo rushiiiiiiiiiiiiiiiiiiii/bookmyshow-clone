@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, Navigate } from "react-router-dom";
-import React from 'react'
+import React from "react";
 export default function RoleGate({ children }) {
   const location = useLocation();
   const [role, setRole] = useState("loading");
@@ -34,10 +34,13 @@ export default function RoleGate({ children }) {
 
   const path = location.pathname;
 
-  // 🚫 GUEST → cannot access admin/seller
+  // 🚫 GUEST → block admin & seller EXCEPT seller auth pages
   if (
     role === "guest" &&
-    (path.startsWith("/admin") || path.startsWith("/seller"))
+    (path.startsWith("/admin") ||
+      (path.startsWith("/seller") &&
+        !path.startsWith("/seller/signin") &&
+        !path.startsWith("/seller/signup")))
   ) {
     return <Navigate to="/register" replace />;
   }

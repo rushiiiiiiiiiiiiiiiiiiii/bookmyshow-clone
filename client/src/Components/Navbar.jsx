@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { LogOut } from "lucide-react";
 import SearchModal from "./SearchModal";
 import { MapPin } from "lucide-react";
-
+import {toast} from 'react-hot-toast'
 function CityIcon({ src, name }) {
   const [error, setError] = useState(false);
 
@@ -45,8 +45,7 @@ function AdminNavbar() {
           credentials: "include",
         },
       );
-
-      window.location.href = "/register"; // 🔥 force reload
+      navigate("/register", { replace: true });
     } catch (err) {
       console.error("Admin logout failed", err);
     }
@@ -195,6 +194,7 @@ function SellerNavbar() {
       );
 
       navigate("/seller/signin", { replace: true });
+      window.location.reload();
     } catch (err) {
       console.error("Seller logout failed", err);
     }
@@ -401,6 +401,7 @@ function UserNavbar({ movies = [] }) {
       setShowProfileMenu(false);
       setMobileMenu(false);
       navigate("/");
+      toast
     } catch (error) {
       console.error("Logout failed", error);
     }
